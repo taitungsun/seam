@@ -1,0 +1,2529 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>特殊教育行政管理系統 v1.0</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+:root{
+  --bg:#F6F1E7;
+  --surface:#FFFFFF;
+  --surface-alt:#FBF7EF;
+  --ink:#2A332D;
+  --ink-soft:#647265;
+  --ink-faint:#94A092;
+  --primary:#3F6B53;
+  --primary-dark:#2A4A39;
+  --primary-soft:#E2EAE2;
+  --accent:#C2693C;
+  --accent-soft:#F3DECB;
+  --line:#E2D9C4;
+  --line-soft:#EDE6D4;
+  --danger:#AE4438;
+  --danger-soft:#F4DFD9;
+  --warning:#B9842B;
+  --warning-soft:#F3E6C9;
+  --good:#3F6B53;
+  --shadow: 0 2px 10px rgba(43,40,20,0.06), 0 1px 2px rgba(43,40,20,0.05);
+  --radius:10px;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size:14px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Noto Serif TC', serif; font-weight:700; margin:0; color:var(--primary-dark);}
+.num{font-variant-numeric:tabular-nums;}
+a{color:inherit;}
+button{font-family:inherit;}
+::selection{background:var(--accent-soft);}
+
+#app{display:flex; min-height:100vh;}
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  width:228px; flex-shrink:0;
+  background:linear-gradient(180deg, var(--primary-dark), var(--primary) 140%);
+  color:#F3EFE2;
+  display:flex; flex-direction:column;
+  padding:22px 16px;
+  position:sticky; top:0; height:100vh;
+}
+.brand{display:flex; align-items:center; gap:10px; padding:0 6px 22px 6px; border-bottom:1px solid rgba(255,255,255,0.15); margin-bottom:18px;}
+.brand-mark{
+  width:38px; height:38px; border-radius:50%;
+  background:var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Noto Serif TC', serif; font-weight:700; font-size:17px; color:#fff;
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,0.25);
+  flex-shrink:0;
+}
+.brand-text .t1{font-family:'Noto Serif TC',serif; font-weight:700; font-size:15.5px; color:#fff; line-height:1.3;}
+.brand-text .t2{font-size:11px; color:#CFE0D2; letter-spacing:.04em;}
+
+.nav{display:flex; flex-direction:column; gap:3px; flex:1;}
+.nav-item{
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; border-radius:8px; cursor:pointer;
+  color:#E7EFE6; font-size:13.5px; font-weight:500;
+  transition:background .15s ease;
+  border:none; background:transparent; text-align:left; width:100%;
+}
+.nav-item:hover{background:rgba(255,255,255,0.08);}
+.nav-item.active{background:rgba(255,255,255,0.16); color:#fff; box-shadow:inset 3px 0 0 var(--accent);}
+.nav-icon{width:18px; height:18px; flex-shrink:0; opacity:.9;}
+.nav-foot{padding-top:14px; margin-top:10px; border-top:1px solid rgba(255,255,255,0.15); font-size:11px; color:#BFD3C3;}
+.nav-foot button{
+  display:block; width:100%; text-align:left; background:none; border:none; color:#D9E7DB;
+  font-size:12px; padding:7px 6px; border-radius:6px; cursor:pointer; margin-top:2px;
+}
+.nav-foot button:hover{background:rgba(255,255,255,0.08); color:#fff;}
+
+/* ---------- Main ---------- */
+.main{flex:1; min-width:0; padding:28px 36px 60px; max-width:1320px;}
+.topbar{display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:22px; flex-wrap:wrap;}
+.topbar h1{font-size:24px;}
+.topbar .sub{color:var(--ink-soft); font-size:13px; margin-top:4px;}
+.topbar-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+
+.eyebrow{
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent);
+  font-weight:700; margin-bottom:4px;
+}
+
+/* ---------- Buttons / inputs ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 14px; border-radius:8px; border:1px solid var(--line);
+  background:var(--surface); color:var(--ink); font-size:13px; font-weight:500;
+  cursor:pointer; transition:.15s ease; white-space:nowrap;
+}
+.btn:hover{border-color:var(--primary); color:var(--primary-dark); background:var(--primary-soft);}
+.btn-primary{background:var(--primary); border-color:var(--primary); color:#fff;}
+.btn-primary:hover{background:var(--primary-dark); color:#fff;}
+.btn-accent{background:var(--accent); border-color:var(--accent); color:#fff;}
+.btn-accent:hover{background:#A85731; border-color:#A85731; color:#fff;}
+.btn-ghost{background:transparent; border-color:transparent;}
+.btn-ghost:hover{background:var(--primary-soft);}
+.btn-danger{color:var(--danger); border-color:var(--danger-soft);}
+.btn-danger:hover{background:var(--danger-soft); border-color:var(--danger);}
+.btn-sm{padding:5px 10px; font-size:12px; border-radius:7px;}
+.btn:disabled{opacity:.4; cursor:not-allowed;}
+
+input,select,textarea{
+  font-family:inherit; font-size:13px; color:var(--ink);
+  border:1px solid var(--line); border-radius:7px; padding:8px 10px;
+  background:#fff; outline:none; width:100%;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-soft);}
+textarea{resize:vertical; min-height:64px; font-family:inherit;}
+label{font-size:12px; font-weight:700; color:var(--ink-soft); display:block; margin-bottom:5px;}
+.field{margin-bottom:14px;}
+.field-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.field-row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;}
+.hint{font-size:11px; color:var(--ink-faint); margin-top:4px;}
+
+/* ---------- Cards / stats ---------- */
+.cards{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;}
+.card{
+  background:var(--surface); border:1px solid var(--line-soft); border-radius:var(--radius);
+  padding:18px 18px; box-shadow:var(--shadow);
+}
+.card .label{font-size:12px; color:var(--ink-soft); font-weight:600;}
+.card .value{font-family:'Noto Serif TC', serif; font-size:30px; font-weight:700; color:var(--primary-dark); margin-top:6px;}
+.card .value small{font-size:14px; font-weight:500; color:var(--ink-soft);}
+.card .delta{font-size:11.5px; margin-top:6px; color:var(--ink-faint);}
+
+.panel{background:var(--surface); border:1px solid var(--line-soft); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px 22px; margin-bottom:22px;}
+.panel-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px; flex-wrap:wrap;}
+.panel-head h3{font-size:15.5px;}
+.panel-grid2{display:grid; grid-template-columns:1.3fr 1fr; gap:18px;}
+
+/* ring */
+.ring-wrap{display:flex; align-items:center; gap:18px;}
+.ring-num{font-family:'Noto Serif TC',serif; font-size:26px; font-weight:700; color:var(--primary-dark);}
+
+/* bars */
+.bar-row{display:flex; align-items:center; gap:10px; margin-bottom:9px;}
+.bar-row .bl{width:84px; font-size:12.5px; color:var(--ink-soft); flex-shrink:0; text-align:right;}
+.bar-track{flex:1; height:9px; background:var(--line-soft); border-radius:5px; overflow:hidden;}
+.bar-fill{height:100%; border-radius:5px; background:var(--primary);}
+.bar-row .bv{width:30px; font-size:12px; color:var(--ink-soft); flex-shrink:0;}
+
+/* chips/badges */
+.chip{display:inline-flex; align-items:center; gap:4px; padding:2px 9px; border-radius:99px; font-size:11.5px; font-weight:700; line-height:1.8;}
+.chip-dot{width:6px; height:6px; border-radius:50%; display:inline-block;}
+.tag{display:inline-block; padding:1px 7px; border-radius:6px; font-size:11px; font-weight:600; background:var(--primary-soft); color:var(--primary-dark); margin:1px 3px 1px 0;}
+.tag.add{background:var(--accent-soft); color:#8C4421;}
+.tag.special{background:#E7DEF0; color:#5B3C82;}
+.tag.coteach{background:#DDEAF3; color:#2A5A77;}
+.badge-cat{padding:2px 9px; border-radius:99px; font-size:11.5px; font-weight:700;}
+.alert-row{display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-bottom:1px dashed var(--line);}
+.alert-row:last-child{border-bottom:none;}
+.alert-dot{width:8px;height:8px;border-radius:50%; margin-top:5px; flex-shrink:0;}
+
+/* ---------- Tables ---------- */
+.table-wrap{overflow-x:auto; border:1px solid var(--line-soft); border-radius:8px;}
+table{width:100%; border-collapse:collapse; font-size:12.8px;}
+thead th{
+  background:var(--surface-alt); text-align:left; padding:9px 11px; font-size:11.5px;
+  color:var(--ink-soft); font-weight:700; border-bottom:1px solid var(--line); white-space:nowrap;
+}
+tbody td{padding:9px 11px; border-bottom:1px solid var(--line-soft); vertical-align:top;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--surface-alt);}
+tr.total-row td{background:var(--primary-soft); font-weight:700; color:var(--primary-dark);}
+.cell-actions{display:flex; gap:6px; white-space:nowrap;}
+.icon-btn{
+  background:none; border:1px solid var(--line); border-radius:6px; width:26px; height:26px;
+  display:inline-flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink-soft);
+}
+.icon-btn:hover{border-color:var(--primary); color:var(--primary);}
+.icon-btn.del:hover{border-color:var(--danger); color:var(--danger);}
+.empty-state{text-align:center; padding:50px 20px; color:var(--ink-faint);}
+.empty-state .big{font-size:34px; margin-bottom:10px;}
+
+/* filter bar */
+.filters{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; align-items:center;}
+.filters input,.filters select{width:auto; min-width:120px;}
+.filters .search{flex:1; min-width:180px;}
+
+/* ---------- Schedule grid ---------- */
+.sched-card{margin-bottom:22px;}
+.sched-grid{display:grid; grid-template-columns:64px 92px repeat(5,1fr); border:1px solid var(--line-soft); border-radius:8px; overflow:hidden;}
+.sched-cell{padding:8px 9px; border-bottom:1px solid var(--line-soft); border-right:1px solid var(--line-soft); font-size:12px; min-height:46px;}
+.sched-grid .sched-cell:nth-child(7n){border-right:none;}
+.sched-head{background:var(--surface-alt); font-weight:700; color:var(--ink-soft); font-size:11.5px; text-align:center; display:flex; align-items:center; justify-content:center;}
+.sched-period{background:var(--surface-alt); text-align:center; font-weight:700; color:var(--primary-dark); display:flex; align-items:center; justify-content:center;}
+.sched-time{background:var(--surface-alt); text-align:center; font-size:10px; color:var(--ink-faint); font-weight:500; display:flex; align-items:center; justify-content:center;}
+.sched-cell.editable{cursor:pointer; white-space:pre-wrap; position:relative;}
+.sched-cell.editable:hover{background:var(--accent-soft);}
+.sched-cell.filled{background:#FBFBF6;}
+
+/* ---------- Budget ---------- */
+.year-chips{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:18px;}
+.year-chip{
+  padding:7px 14px; border-radius:99px; border:1px solid var(--line); background:#fff;
+  font-size:12.5px; font-weight:700; cursor:pointer; color:var(--ink-soft);
+}
+.year-chip.active{background:var(--primary); border-color:var(--primary); color:#fff;}
+.plan-badge{padding:2px 9px; border-radius:6px; font-size:11px; font-weight:700; background:var(--accent-soft); color:#8C4421;}
+.budget-table-card{margin-bottom:20px;}
+.budget-table-card .panel-head h4{font-size:14.5px; font-family:'Noto Serif TC',serif; color:var(--primary-dark);}
+.notes-cell{max-width:260px; white-space:pre-wrap; font-size:12px; color:var(--ink-soft); text-align:left; vertical-align:top;}
+.notes-list{margin:0; padding-left:15px; text-align:left;}
+.notes-list li{margin-bottom:2px;}
+.due-badge{padding:2px 9px; border-radius:6px; font-size:11px; font-weight:700;}
+.due-badge.ok{background:var(--primary-soft); color:var(--primary-dark);}
+.due-badge.warning{background:var(--warning-soft); color:var(--warning);}
+.due-badge.danger{background:var(--danger-soft); color:var(--danger);}
+.trend-chart{display:flex; align-items:flex-end; gap:10px; height:150px; padding:10px 4px 0; border-bottom:1px solid var(--line);}
+.trend-bar-wrap{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end;}
+.trend-bar{width:100%; max-width:30px; border-radius:4px 4px 0 0; position:relative;}
+.trend-label{font-size:10.5px; color:var(--ink-faint);}
+
+/* ---------- Modal ---------- */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(30,28,18,0.45); display:flex; align-items:flex-start;
+  justify-content:center; padding:48px 16px; z-index:100; overflow-y:auto; backdrop-filter:blur(1px);
+}
+.modal{
+  background:#fff; border-radius:14px; width:100%; max-width:560px; box-shadow:0 18px 50px rgba(0,0,0,0.25);
+  padding:24px 26px 22px; animation:pop .15s ease;
+}
+.modal.wide{max-width:700px;}
+@keyframes pop{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+.modal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
+.modal-head h3{font-size:17px;}
+.modal-close{background:none; border:none; font-size:20px; cursor:pointer; color:var(--ink-faint); line-height:1;}
+.modal-close:hover{color:var(--ink);}
+.modal-foot{display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:16px; border-top:1px solid var(--line-soft);}
+
+.toast{
+  position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff;
+  padding:10px 20px; border-radius:99px; font-size:13px; z-index:200; box-shadow:var(--shadow); opacity:0;
+  transition:opacity .25s ease, transform .25s ease; pointer-events:none;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+
+.section-intro{color:var(--ink-soft); font-size:13px; margin:-6px 0 18px; max-width:680px;}
+
+/* ---------- Department filter chips ---------- */
+.dept-chips{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px;}
+
+/* ---------- Assessment form (special-ed needs assessment) ---------- */
+.assess-cat{border:1px solid var(--line-soft); border-radius:8px; margin-bottom:10px; background:var(--surface-alt);}
+.assess-cat summary{cursor:pointer; padding:10px 14px; font-weight:700; color:var(--primary-dark); font-size:13px; list-style:none; display:flex; align-items:center; gap:6px;}
+.assess-cat summary::before{content:'▸'; color:var(--accent); transition:transform .15s ease;}
+.assess-cat[open] summary::before{transform:rotate(90deg);}
+.assess-cat summary::-webkit-details-marker{display:none;}
+.assess-cat-body{padding:4px 14px 12px;}
+.assess-item{padding:8px 0; border-top:1px dashed var(--line);}
+.assess-item:first-child{border-top:none;}
+.assess-item-label{font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:6px;}
+.assess-options{display:flex; flex-wrap:wrap; gap:6px; align-items:center;}
+.opt-chip{display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); background:#fff; font-size:11.5px; cursor:pointer; user-select:none;}
+.opt-chip:has(input:checked){background:var(--primary-soft); border-color:var(--primary); color:var(--primary-dark); font-weight:700;}
+.opt-chip input{width:auto; margin:0;}
+.opt-other{width:150px; flex-shrink:0; padding:5px 9px; font-size:11.5px; border-radius:99px;}
+
+.status-log{max-height:140px; overflow-y:auto; padding:4px 0;}
+.status-log-row{display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px dashed var(--line-soft); font-size:12.5px;}
+.status-log-row:last-child{border-bottom:none;}
+
+/* ---------- Grade table ---------- */
+.grade-card{margin-bottom:20px;}
+.grade-table thead th{text-align:center; font-size:11px; border:1px solid var(--line); padding:5px 7px;}
+.grade-table tbody td{border:1px solid var(--line-soft); padding:6px 9px; text-align:center;}
+.grade-table{border-collapse:collapse; min-width:960px;}
+.grade-input{cursor:pointer; color:var(--ink);}
+.grade-input:hover{background:var(--accent-soft);}
+.grade-calc{background:var(--surface-alt); color:var(--ink-soft); font-size:11.5px;}
+.grade-total{background:var(--primary-soft); color:var(--primary-dark); font-weight:700;}
+
+/* ---------- Footer ---------- */
+.app-footer{
+  text-align:center; padding:28px 20px 24px; color:var(--ink-faint); font-size:11.5px;
+  border-top:1px solid var(--line-soft); margin-top:40px; line-height:2;
+}
+.app-footer a{color:var(--ink-faint); text-decoration:none;}
+.app-footer a:hover{color:var(--primary);}
+.cc-badge{display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border:1px solid var(--line); border-radius:6px; font-size:11px; margin-top:4px;}
+.cc-badge svg{width:14px; height:14px; flex-shrink:0;}
+
+@media (max-width:980px){
+  .cards{grid-template-columns:repeat(2,1fr);}
+  .panel-grid2{grid-template-columns:1fr;}
+  .sidebar{width:200px;}
+  .main{padding:20px 22px 50px;}
+}
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr;}
+  .field-row,.field-row3{grid-template-columns:1fr;}
+  .sidebar{position:relative; height:auto; width:100%;}
+  #app{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal-root"></div>
+<div id="toast" class="toast"></div>
+<script>
+const SEED_DATA = {"students": [], "schedules": [{"id": "sch_demo1", "title": "課程分組範例（請點擊格子編輯）", "schedType": "group", "periods": [{"id": "p0", "period": "1", "time": "08:10~09:00", "days": [null, null, null, null, null]}, {"id": "p1", "period": "2", "time": "09:10~10:00", "days": [null, null, null, null, null]}, {"id": "p2", "period": "3", "time": "10:10~11:00", "days": [null, null, null, null, null]}, {"id": "p3", "period": "4", "time": "11:10~12:00", "days": [null, null, null, null, null]}, {"id": "p4", "period": "5", "time": "13:15~14:05", "days": [null, null, null, null, null]}, {"id": "p5", "period": "6", "time": "14:15~15:05", "days": [null, null, null, null, null]}, {"id": "p6", "period": "7", "time": "15:25~16:15", "days": [null, null, null, null, null]}]}, {"id": "sch_demo2", "title": "教師課表範例（請點擊格子編輯）", "schedType": "teacher", "periods": [{"id": "tp0", "period": "1", "time": "08:10~09:00", "days": [null, null, null, null, null]}, {"id": "tp1", "period": "2", "time": "09:10~10:00", "days": [null, null, null, null, null]}, {"id": "tp2", "period": "3", "time": "10:10~11:00", "days": [null, null, null, null, null]}, {"id": "tp3", "period": "4", "time": "11:10~12:00", "days": [null, null, null, null, null]}, {"id": "tp4", "period": "5", "time": "13:15~14:05", "days": [null, null, null, null, null]}, {"id": "tp5", "period": "6", "time": "14:15~15:05", "days": [null, null, null, null, null]}, {"id": "tp6", "period": "7", "time": "15:25~16:15", "days": [null, null, null, null, null]}]}], "budgetTables": [], "meta": {"updatedAt": null, "source": "SEAM v1.0 — 特殊教育行政管理系統", "committeePeriod": "114學年度第2學期"}, "reminders": [], "settings": {"schoolName": "", "schoolShort": "", "resourceClassName": "分散式資源班", "city": "", "contact": "", "principalName": "", "resourceDirectorName": "", "counselingDirectorName": "", "depts": ["資料處理科", "電子商務科", "會計事務科", "商業經營科", "應用英語科", "觀光事務科", "廣告設計科"]}, "gradeRecords": []};
+</script>
+<script>
+/* =========================================================
+   特殊教育行政管理系統 (SEAM v1.0)
+   ========================================================= */
+const STORE_KEY = 'rb-system-data-v2';
+let DATA = null;
+let UI = {
+  tab: 'dashboard',
+  stuQuery: '', stuClass: '', stuCategory: '', stuDept: '', stuShowArchived:false,
+  budgetYear: 'current',
+  budgetShowCompleted: false,
+  expandedNotes: {},
+  committeeMasked: true,
+  gradeYear: 'all',
+  dashChartMode: false,   // false=特教類別, true=科別
+};
+let SAVE_TIMER = null;
+
+const CATEGORY_COLORS = {
+  '學習障礙': {bg:'#E2EAE2', fg:'#2A4A39'},
+  '自閉症':   {bg:'#DDEAF3', fg:'#2A5A77'},
+  '肢體障礙': {bg:'#F3DECB', fg:'#8C4421'},
+  '情緒障礙': {bg:'#E7DEF0', fg:'#5B3C82'},
+  '多重障礙': {bg:'#F4DFD9', fg:'#AE4438'},
+  '智能障礙': {bg:'#F3E6C9', fg:'#8C6A14'},
+  '其他':     {bg:'#EDE6D4', fg:'#647265'},
+};
+function catColor(cat){ return CATEGORY_COLORS[cat] || CATEGORY_COLORS['其他']; }
+
+function uid(prefix){ return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function fmtNum(n){ if(n===null||n===undefined||n===''||isNaN(n)) return '—'; return Number(n).toLocaleString('zh-Hant-TW'); }
+function escapeHtml(s){ if(s===null||s===undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function nl2br(s){ return escapeHtml(s).replace(/\n/g,'<br>'); }
+
+/* ---------------- persistence (localStorage) ---------------- */
+async function loadData(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw){ DATA = JSON.parse(raw); return true; }
+  }catch(e){ console.warn('loadData error', e); }
+  return false;
+}
+function scheduleSave(){
+  clearTimeout(SAVE_TIMER);
+  SAVE_TIMER = setTimeout(saveData, 350);
+}
+async function saveData(){
+  try{
+    DATA.meta.updatedAt = new Date().toISOString();
+    localStorage.setItem(STORE_KEY, JSON.stringify(DATA));
+  }catch(e){
+    console.error('儲存失敗', e);
+    showToast('⚠ 資料儲存失敗，請確認瀏覽器允許本機儲存（localStorage）');
+  }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ---------------- budget helpers ---------------- */
+function n(v){ return (v===null||v===undefined||v==='') ? 0 : Number(v)||0; }
+function recalcTableTotal(table){
+  const dataRows = table.rows.filter(r=>!r.isTotal);
+  const sum = (k)=> dataRows.reduce((a,r)=>a + n(r[k]), 0);
+  let totalRow = table.rows.find(r=>r.isTotal);
+  const totals = {
+    applied: sum('applied') || null,
+    budget: sum('budget'),
+    spent: sum('spent'),
+    certified: sum('certified'),
+    pending: sum('pending'),
+    balance: sum('budget') - sum('spent') - sum('certified') - sum('pending'),
+  };
+  if(!totalRow){
+    totalRow = {id: uid('row'), item:'合計', name:'合計', notes:null, period:null, isTotal:true};
+    table.rows.push(totalRow);
+  }
+  Object.assign(totalRow, totals);
+}
+function execRate(table){
+  const t = table.rows.find(r=>r.isTotal) || {};
+  const budget = n(t.budget);
+  if(budget<=0) return 0;
+  const used = n(t.spent)+n(t.certified)+n(t.pending);
+  return Math.max(0, Math.min(1, used/budget));
+}
+function tableYearList(){
+  const ys = Array.from(new Set(DATA.budgetTables.map(t=>t.year))).sort((a,b)=>Number(b)-Number(a));
+  return ys;
+}
+function latestYear(){
+  const ys = tableYearList();
+  return ys.length ? ys[0] : null;
+}
+
+/* ---------------- departments ---------------- */
+const DEPT_MAP = {
+  '資':'資料處理科', '電':'電子商務科', '會':'會計事務科', '商':'商業經營科',
+  '應':'應用英語科', '觀':'觀光事務科', '廣':'廣告設計科', '進':'進修部',
+};
+function deptCode(className){ return (className||'').trim().charAt(0) || '?'; }
+function deptLabel(code){ return DEPT_MAP[code] || code; }
+function deptListInUse(){
+  const codes = Array.from(new Set(DATA.students.map(s=>deptCode(s.class))));
+  // known depts first in a stable order, then any unknown codes encountered
+  const known = Object.keys(DEPT_MAP).filter(c=>codes.includes(c));
+  const unknown = codes.filter(c=>!DEPT_MAP[c]).sort();
+  return [...known, ...unknown];
+}
+
+/* ---------------- student status / archive ---------------- */
+const STATUS_OPTIONS = ['在學','休學','轉學','畢業'];
+function isArchived(s){ return !!s.archived || (s.status && s.status!=='在學'); }
+function statusBadgeColor(status){
+  if(status==='休學') return {bg:'var(--warning-soft)', fg:'#8C6A14'};
+  if(status==='轉學') return {bg:'#DDEAF3', fg:'#2A5A77'};
+  if(status==='畢業') return {bg:'var(--primary-soft)', fg:'var(--primary-dark)'};
+  return {bg:'var(--line-soft)', fg:'var(--ink-soft)'};
+}
+
+/* ---------------- de-identification ---------------- */
+function maskName(name){
+  if(!name) return '';
+  const s = String(name).trim();
+  if(s.length<=1) return s;
+  return s.charAt(0) + '○'.repeat(s.length-1);
+}
+function studentDisplayId(s){
+  const idx = DATA.students.findIndex(x=>x.id===s.id);
+  const n = idx>=0 ? idx+1 : 0;
+  return 'S' + String(n).padStart(2,'0');
+}
+
+/* ---------------- date / reminder helpers ---------------- */
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function daysUntil(dateStr){
+  if(!dateStr) return null;
+  const d = new Date(dateStr+'T00:00:00');
+  if(isNaN(d.getTime())) return null;
+  const today = new Date(todayStr()+'T00:00:00');
+  return Math.round((d-today)/86400000);
+}
+function fmtDate(dateStr){
+  if(!dateStr) return '—';
+  return dateStr;
+}
+function icsEscape(s){
+  return String(s||'').replace(/\\/g,'\\\\').replace(/,/g,'\\,').replace(/;/g,'\\;').replace(/\n/g,'\\n');
+}
+function downloadICS(filename, events){
+  // events: [{uid, title, date(YYYY-MM-DD), note}]
+  const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//特殊教育行政管理系統//TW'];
+  events.forEach(ev=>{
+    if(!ev.date) return;
+    const dt = ev.date.replace(/-/g,'');
+    lines.push('BEGIN:VEVENT');
+    lines.push('UID:'+(ev.uid||uid('ev'))+'@seam-system');
+    lines.push('DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z');
+    lines.push('DTSTART;VALUE=DATE:'+dt);
+    lines.push('DTEND;VALUE=DATE:'+dt);
+    lines.push('SUMMARY:'+icsEscape(ev.title));
+    if(ev.note) lines.push('DESCRIPTION:'+icsEscape(ev.note));
+    lines.push('END:VEVENT');
+  });
+  lines.push('END:VCALENDAR');
+  const blob = new Blob([lines.join('\r\n')], {type:'text/calendar;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+/* ---------------- ICS import (parse .ics and add to reminders) ---------------- */
+function importICS(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const text = reader.result;
+      const events = [];
+      // Split into VEVENT blocks
+      const blocks = text.split('BEGIN:VEVENT');
+      blocks.slice(1).forEach(block=>{
+        const lines = block.split(/\r?\n/);
+        const get = key => {
+          const line = lines.find(l=>l.startsWith(key+':') || l.startsWith(key+';'));
+          if(!line) return '';
+          return line.replace(/^[^:]+:/, '').replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').trim();
+        };
+        const summary = get('SUMMARY');
+        if(!summary) return;
+        // Parse date: DTSTART;VALUE=DATE:20261201 or DTSTART:20261201T...
+        const dtLine = lines.find(l=>l.startsWith('DTSTART'));
+        let dateStr = '';
+        if(dtLine){
+          const raw = dtLine.replace(/^[^:]+:/,'').trim();
+          const m = raw.match(/^(\d{4})(\d{2})(\d{2})/);
+          if(m) dateStr = `${m[1]}-${m[2]}-${m[3]}`;
+        }
+        const desc = get('DESCRIPTION');
+        events.push({id:uid('rem'), title:summary, date:dateStr, note:desc});
+      });
+      if(!events.length){ showToast('⚠ 找不到可匯入的行事曆事件'); return; }
+      if(!DATA.reminders) DATA.reminders = [];
+      events.forEach(e=>DATA.reminders.push(e));
+      scheduleSave();
+      renderCurrentTab();
+      showToast(`已從 .ics 匯入 ${events.length} 筆提醒事項`);
+    }catch(err){
+      showToast('⚠ .ics 檔案解析失敗：'+err.message);
+    }
+    evt.target.value='';
+  };
+  reader.readAsText(file);
+}
+
+/* ---------------- print helper (used for de-identified export & committee report) ---------------- */
+function openPrintWindow(title, bodyHtml){
+  const win = window.open('', '_blank');
+  if(!win){ showToast('⚠ 無法開啟列印視窗，請允許瀏覽器彈出視窗'); return; }
+  win.document.write(`<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"><title>${title}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+    *{box-sizing:border-box;}
+    body{font-family:'Noto Sans TC',sans-serif; color:#2A332D; padding:28px; font-size:12.5px; line-height:1.6;}
+    h1{font-family:'Noto Serif TC',serif; font-size:18px; margin:0 0 4px;}
+    h2{font-family:'Noto Serif TC',serif; font-size:14px; margin:22px 0 8px; border-left:4px solid #3F6B53; padding-left:8px;}
+    .meta{color:#647265; font-size:11.5px; margin-bottom:14px;}
+    table{width:100%; border-collapse:collapse; font-size:11.5px; margin-bottom:6px;}
+    th,td{border:1px solid #D8CFB6; padding:6px 8px; text-align:left; vertical-align:top;}
+    th{background:#FBF7EF; font-weight:700;}
+    ul{margin:0; padding-left:16px;}
+    .footnote{font-size:10.5px; color:#94A092; margin-top:8px;}
+    .sign-row{display:flex; justify-content:flex-end; gap:60px; margin-top:46px; font-size:12px;}
+    @media print{ body{padding:8mm;} }
+  </style></head><body>${bodyHtml}
+  <script>window.onload=function(){ setTimeout(function(){ window.print(); }, 200); };<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+/* ---------------- special-education needs assessment schema ----------------
+   Mirrors the school's official「特殊教育需求學生需求評估表」structure.       */
+const ASSESS_SCHEMA = [
+  { id:'resource', label:'資源班課程', items:[
+    { id:'addon',   label:'外加課程',  options:['基本科目','職業科目'] },
+    { id:'pullout', label:'抽離課程',  options:['國文','英文','數學'] },
+    { id:'special', label:'特殊需求領域', options:['學習策略','社會技巧','職業教育','點字課程','生活管理','定向行動','功能性動作訓練','輔助科技應用','溝通訓練'] },
+    { id:'eighth',  label:'學習扶助課程（第八節）', options:['就學輔導','就業輔導','證照輔導','生活與休閒輔導','體適能輔導','相關專業輔導'] },
+  ]},
+  { id:'indirect', label:'間接服務', items:[
+    { id:'needAssess', label:'需求評估與處理', options:['個案資料的建立與管理','學習情境的評估與適配','輔具的申請與訓練','專業團隊服務的規劃與合作','巡迴輔導教師的規劃與合作','同儕支持服務的建立與訓練','轉銜輔導與服務'] },
+    { id:'interview',  label:'個別晤談與指導', options:['個別晤談','適性輔導','學習指導'] },
+    { id:'consult',    label:'諮詢服務', options:['特殊教育諮詢服務','課程調整諮詢服務'] },
+    { id:'inclass',    label:'入班支援', options:['入班觀察與協助','行為功能介入方案實施'] },
+    { id:'otherIndirect', label:'其他', options:['學生助理人員職責說明','突發事件的協助與處理','特殊教育宣導'] },
+  ]},
+  { id:'exam', label:'考試服務', items:[
+    { id:'examRoom',     label:'試場服務', options:['提早入場','延長考試時間','少人試場','無障礙試場環境','提醒服務'] },
+    { id:'examAid',      label:'輔具服務', options:['擴視機','放大鏡','點字機','檯燈','特殊座椅','自備輔具'] },
+    { id:'paperAdjust',  label:'試卷調整', options:['調整試題與考生之適配性','調整試題的題數','調整試題的比例計分','放大試卷','點字試卷','電子試題','有聲試題','觸摸圖型試題','報讀'] },
+    { id:'answerAdjust', label:'作答調整', options:['電腦作答','放大答案卡(卷)','口語錄音作答','代謄答案卡'] },
+  ]},
+  { id:'support', label:'相關服務與支持策略', items:[
+    { id:'aids',         label:'教育輔具', options:['肢體障礙類(書寫、電腦、行動等)','聽語障礙類(調頻輔具、溝通輔具等)','視覺障礙類(盲用電腦、擴視機、點字器等)'] },
+    { id:'material',     label:'適性教材', options:['點字學習材料(觸覺式)','放大字體','有聲書籍','色彩強化學習材料','影音加註文字','數位及電子化格式等學習材料'] },
+    { id:'learnHelp',    label:'學習協助', options:['錄音','報讀','掃描校對','提醒服務','手語翻譯','同步聽打員','代抄筆記'] },
+    { id:'lifeHelp',     label:'生活協助', options:['教師助理員','特教學生助理人員','同儕支持服務(志工/小天使)','工讀生(中、重度以上)'] },
+    { id:'familySupport',label:'家庭支持', options:['提供特教研習資訊','提供親職教育','提供各項福利補助訊息'] },
+    { id:'barrierFree',  label:'無障礙環境', options:['教室位置','座位安排','特製桌椅','光線','隔音','室內出入口','扶手','無障礙廁所','電梯','導盲磚','室內通路與走廊','斜坡道'] },
+    { id:'team',         label:'相關專業團隊', options:['醫師','物理治療師','職能治療師','臨床心理師','諮商心理師','語言治療師','聽力師','社會工作師','職業輔導專業人員','定向行動專業人員'] },
+    { id:'otherService', label:'其他服務', options:['交通費補助'] },
+  ]},
+];
+function emptyAssessment(){
+  const out = {assessor:'', assessDate:'', iepDate:'', note:''};
+  ASSESS_SCHEMA.forEach(cat=>{
+    out[cat.id] = {};
+    cat.items.forEach(item=>{ out[cat.id][item.id] = {checked:false, selected:[], other:''}; });
+  });
+  return out;
+}
+function ensureAssessment(s){
+  if(!s.assessment) s.assessment = emptyAssessment();
+  ASSESS_SCHEMA.forEach(cat=>{
+    if(!s.assessment[cat.id]) s.assessment[cat.id] = {};
+    cat.items.forEach(item=>{
+      if(!s.assessment[cat.id][item.id]) s.assessment[cat.id][item.id] = {checked:false, selected:[], other:''};
+    });
+  });
+  if(s.assessment.assessor===undefined) s.assessment.assessor='';
+  if(s.assessment.assessDate===undefined) s.assessment.assessDate='';
+  if(s.assessment.iepDate===undefined) s.assessment.iepDate='';
+  if(s.assessment.note===undefined) s.assessment.note='';
+  return s.assessment;
+}
+function itemSummary(itemData){
+  if(!itemData || !itemData.checked) return '';
+  const parts = [...(itemData.selected||[])];
+  if(itemData.other) parts.push(itemData.other);
+  return parts.join('、');
+}
+
+</script>
+<script>
+/* ---------------- Dashboard ---------------- */
+function renderDashboard(){
+  const students = DATA.students.filter(s=>!isArchived(s));
+  const total = students.length;
+  const catCounts = {};
+  students.forEach(s=>{ catCounts[s.category] = (catCounts[s.category]||0)+1; });
+
+  const ly = latestYear();
+  const yearTables = ly ? DATA.budgetTables.filter(t=>t.year===ly) : [];
+  let yBudget=0,yUsed=0,yBalance=0;
+  yearTables.forEach(t=>{
+    const tr = t.rows.find(r=>r.isTotal);
+    if(tr){ yBudget+=n(tr.budget); yUsed += n(tr.spent)+n(tr.certified)+n(tr.pending); yBalance += n(tr.balance); }
+  });
+  const rate = yBudget>0 ? yUsed/yBudget : 0;
+  const ratePct = Math.round(rate*100);
+
+  // 結報日期提醒：彙整所有設有「應結報日期」的經費計畫，依日期排序（逾期優先）
+  const dueTables = DATA.budgetTables.filter(t=>t.dueDate).map(t=>({
+    table:t, days: daysUntil(t.dueDate)
+  })).sort((a,b)=> a.days - b.days);
+
+  // 自訂提醒事項
+  const reminders = (DATA.reminders||[]).slice().sort((a,b)=> (a.date||'9999').localeCompare(b.date||'9999'));
+
+  const maxCat = Math.max(1, ...Object.values(catCounts));
+  const catBars = Object.entries(catCounts).sort((a,b)=>b[1]-a[1]).map(([cat,c])=>{
+    const col = catColor(cat);
+    return `<div class="bar-row">
+      <div class="bl">${escapeHtml(cat)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(c/maxCat*100).toFixed(0)}%; background:${col.fg};"></div></div>
+      <div class="bv num">${c} 人</div>
+    </div>`;
+  }).join('');
+
+  const deptCounts = {};
+  students.forEach(s=>{ const d=deptLabel(deptCode(s.class)); deptCounts[d]=(deptCounts[d]||0)+1; });
+  const maxDept = Math.max(1, ...Object.values(deptCounts));
+  const deptBars = Object.entries(deptCounts).sort((a,b)=>b[1]-a[1]).map(([d,c])=>{
+    return `<div class="bar-row">
+      <div class="bl">${escapeHtml(d)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(c/maxDept*100).toFixed(0)}%;"></div></div>
+      <div class="bv num">${c} 人</div>
+    </div>`;
+  }).join('');
+
+  const circumference = 2*Math.PI*42;
+  const dash = circumference*rate;
+
+  const recentTablesHtml = yearTables.map(t=>{
+    const r = execRate(t);
+    return `<div class="bar-row">
+      <div class="bl" style="width:150px; text-align:left;">${escapeHtml(t.planLabel)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(r*100).toFixed(0)}%; background:${r>0.92?'var(--danger)':'var(--accent)'};"></div></div>
+      <div class="bv num">${Math.round(r*100)}%</div>
+    </div>`;
+  }).join('') || `<div class="hint">尚無 ${escapeHtml(ly||'')} 年度經費資料</div>`;
+
+  // Build unified reminder list: merge budget due dates + custom reminders, sort by date
+  const allItems = [
+    ...dueTables.map(d=>({
+      type: 'budget', date: d.table.dueDate, days: d.days,
+      label: `${d.table.year}年度「${d.table.title.slice(0,18)}」應結報`,
+      sub: fmtDate(d.table.dueDate),
+    })),
+    ...reminders.map(r=>({
+      type: 'custom', id: r.id, date: r.date, days: r.date ? daysUntil(r.date) : null,
+      label: r.title, sub: r.date ? fmtDate(r.date) : '', note: r.note||'',
+    })),
+  ].sort((a,b)=>{
+    const da = a.days===null ? 9999 : a.days;
+    const db = b.days===null ? 9999 : b.days;
+    return da - db;
+  });
+
+  const unifiedReminderHtml = allItems.length ? allItems.map(item=>{
+    const overdue = item.days!==null && item.days<0;
+    const soon = item.days!==null && item.days>=0 && item.days<=14;
+    const color = overdue ? 'var(--danger)' : (soon ? 'var(--warning)' : 'var(--ink-faint)');
+    const dayLabel = item.days===null ? '' : overdue ? `（已逾期 ${Math.abs(item.days)} 天）` : `（剩 ${item.days} 天）`;
+    const typeTag = item.type==='budget' ? `<span class="plan-badge" style="font-size:10px; padding:1px 6px; vertical-align:middle;">結報</span>` : '';
+    const del = item.type==='custom' ? `<button class="icon-btn del" title="刪除" style="margin-left:auto; flex-shrink:0;" onclick="deleteReminder('${item.id}')">✕</button>` : '';
+    return `<div class="alert-row">
+      <span class="alert-dot" style="background:${color}"></span>
+      <span style="flex:1;">${typeTag} ${escapeHtml(item.label)}${item.sub?`　<span class="hint">${escapeHtml(item.sub)}${dayLabel}</span>`:''}${item.note?`<div class="hint" style="margin-top:2px;">${escapeHtml(item.note)}</div>`:''}</span>
+      ${del}
+    </div>`;
+  }).join('') : `<div class="hint">尚無提醒事項。可新增自訂提醒，或至「經費管理」為計畫設定應結報日期。</div>`;
+
+  document.getElementById('content').innerHTML = `
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">總覽 Overview</div>
+        <h1>特殊教育班管理儀表板</h1>
+        <div class="sub">最後更新：${DATA.meta && DATA.meta.updatedAt ? new Date(DATA.meta.updatedAt).toLocaleString('zh-Hant-TW') : '尚無記錄'}</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn" onclick="setTab('students')">前往學生資料</button>
+        <button class="btn btn-primary" onclick="setTab('budget')">前往經費管理</button>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="label">服務學生人數</div>
+        <div class="value">${total} <small>人</small></div>
+        <div class="delta">涵蓋 ${Object.keys(catCounts).length} 種特教類別・${new Set(students.map(s=>s.class)).size} 個班級</div>
+      </div>
+      <div class="card">
+        <div class="label">${ly||'—'} 年度經費總額</div>
+        <div class="value">${fmtNum(yBudget)} <small>元</small></div>
+        <div class="delta">共 ${yearTables.length} 項經費計畫</div>
+      </div>
+      <div class="card">
+        <div class="label">已用（含核銷／請購）</div>
+        <div class="value">${fmtNum(yUsed)} <small>元</small></div>
+        <div class="delta">執行率 ${ratePct}%</div>
+      </div>
+      <div class="card">
+        <div class="label">剩餘可用額度</div>
+        <div class="value" style="color:${yBalance<0?'var(--danger)':'var(--primary-dark)'}">${fmtNum(yBalance)} <small>元</small></div>
+        <div class="delta">${dueTables.filter(d=>d.days<=14).length} 項結報日期待留意</div>
+      </div>
+    </div>
+
+    <div class="panel-grid2">
+      <div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>學生分布統計</h3>
+            <div class="cell-actions">
+              <button class="btn btn-sm ${!UI.dashChartMode?'btn-primary':''}" onclick="UI.dashChartMode=false; renderDashboard();">特教類別</button>
+              <button class="btn btn-sm ${UI.dashChartMode?'btn-primary':''}" onclick="UI.dashChartMode=true; renderDashboard();">科別</button>
+            </div>
+          </div>
+          ${!UI.dashChartMode
+            ? (catBars || '<div class="hint">尚無學生資料</div>')
+            : (deptBars || '<div class="hint">尚無資料</div>')}
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-head"><h3>${ly||''} 年度執行率</h3></div>
+          <div class="ring-wrap">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--line-soft)" stroke-width="11"/>
+              <circle cx="50" cy="50" r="42" fill="none" stroke="${rate>0.92?'var(--danger)':'var(--accent)'}" stroke-width="11"
+                stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${circumference.toFixed(1)}"
+                transform="rotate(-90 50 50)"/>
+            </svg>
+            <div>
+              <div class="ring-num">${ratePct}%</div>
+              <div class="hint" style="margin-top:2px;">已運用經費比例</div>
+            </div>
+          </div>
+          <div style="margin-top:14px;">${recentTablesHtml}</div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>提醒事項</h3>
+            <div class="cell-actions">
+              <button class="btn btn-sm" onclick="document.getElementById('ics-import').click()">⤒ 匯入日曆(.ics)</button>
+              <input type="file" id="ics-import" accept=".ics" style="display:none" onchange="importICS(event)">
+              <button class="btn btn-sm" onclick="exportRemindersICS()">⤓ 匯出日曆(.ics)</button>
+              <button class="btn btn-sm btn-primary" onclick="openReminderModal()">＋ 新增提醒</button>
+            </div>
+          </div>
+          ${unifiedReminderHtml}
+          <div class="hint" style="margin-top:10px;">可匯入或匯出 .ics 行事曆檔，與 Google 日曆或手機行事曆同步。</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function openReminderModal(){
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal">
+        <div class="modal-head">
+          <h3>新增提醒事項</h3>
+          <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <form id="reminder-form">
+          <div class="field"><label>提醒標題</label><input name="title" required placeholder="例：特推會審查資料準備"></div>
+          <div class="field"><label>日期（選填）</label><input name="date" type="date"></div>
+          <div class="field"><label>備註（選填）</label><textarea name="note"></textarea></div>
+        </form>
+        <div class="modal-foot">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn btn-primary" onclick="saveReminder()">儲存</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function saveReminder(){
+  const fd = new FormData(document.getElementById('reminder-form'));
+  const title = fd.get('title');
+  if(!title){ showToast('請輸入提醒標題'); return; }
+  if(!DATA.reminders) DATA.reminders = [];
+  DATA.reminders.push({id: uid('rem'), title, date: fd.get('date')||'', note: fd.get('note')||''});
+  scheduleSave();
+  closeModal();
+  renderDashboard();
+  showToast('已新增提醒事項');
+}
+function deleteReminder(id){
+  if(!confirm('確定要刪除此提醒事項嗎？')) return;
+  DATA.reminders = (DATA.reminders||[]).filter(r=>r.id!==id);
+  scheduleSave();
+  renderDashboard();
+  showToast('已刪除提醒事項');
+}
+function exportRemindersICS(){
+  const events = [];
+  (DATA.reminders||[]).forEach(r=>{ if(r.date) events.push({uid:r.id, title:r.title, date:r.date, note:r.note}); });
+  DATA.budgetTables.filter(t=>t.dueDate).forEach(t=>{
+    events.push({uid:t.id+'_due', title:`【結報】${t.title}`, date:t.dueDate, note:`計畫類別：${t.planLabel}`});
+  });
+  if(!events.length){ showToast('目前沒有可匯出的提醒或結報日期'); return; }
+  downloadICS(`資源班提醒事項_${todayStr()}.ics`, events);
+  showToast('已匯出 .ics 檔，可匯入 Google 日曆');
+}
+
+</script>
+<script>
+/* ---------------- Students tab ---------------- */
+function filteredStudents(){
+  const q = UI.stuQuery.trim();
+  return DATA.students.filter(s=>{
+    if(!UI.stuShowArchived && isArchived(s)) return false;
+    if(UI.stuClass && s.class!==UI.stuClass) return false;
+    if(UI.stuCategory && s.category!==UI.stuCategory) return false;
+    if(UI.stuDept && deptCode(s.class)!==UI.stuDept) return false;
+    if(q && !(`${s.name}${s.studentId}${s.class}`.includes(q))) return false;
+    return true;
+  });
+}
+
+function subjectTags(s){
+  let html = '';
+  if(s.pullout) html += `<span class="tag" title="抽離">抽 ${escapeHtml(s.pullout)}</span>`;
+  if(s.addon) html += `<span class="tag add" title="外加">外 ${escapeHtml(s.addon)}</span>`;
+  if(s.special) html += `<span class="tag special" title="特需">特 ${escapeHtml(s.special)}</span>`;
+  if(s.coteach) html += `<span class="tag coteach" title="協同">協 ${escapeHtml(s.coteach)}</span>`;
+  return html || '<span class="hint">—</span>';
+}
+
+function renderStudents(){
+  const classes = Array.from(new Set(DATA.students.map(s=>s.class))).sort();
+  const cats = Array.from(new Set(DATA.students.map(s=>s.category))).sort();
+  const depts = deptListInUse();
+  const list = filteredStudents();
+  const activeCount = DATA.students.filter(s=>!isArchived(s)).length;
+
+  const rows = list.map(s=>{
+    const col = catColor(s.category);
+    const archived = isArchived(s);
+    const sb = statusBadgeColor(s.status||'在學');
+    return `<tr${archived?' style="opacity:.7;"':''}>
+      <td class="num">${studentDisplayId(s)}</td>
+      <td><b>${escapeHtml(s.class)}</b><div class="hint">座號 ${s.seat ?? '—'}</div></td>
+      <td class="num">${escapeHtml(s.studentId)}</td>
+      <td><b>${escapeHtml(s.name)}</b><div class="hint">${escapeHtml(s.gender||'')}</div>
+        ${archived?`<span class="badge-cat" style="background:${sb.bg};color:${sb.fg}; margin-top:3px; display:inline-block;">${escapeHtml(s.status)}</span>`:''}
+      </td>
+      <td><span class="badge-cat" style="background:${col.bg};color:${col.fg}">${escapeHtml(s.category)}</span><div class="hint">${escapeHtml(s.condition||'')}</div></td>
+      <td>${escapeHtml(s.juniorHigh||'—')}<div class="hint">${escapeHtml(s.admission||'')}</div></td>
+      <td>${escapeHtml(s.homeroomTeacher||'—')}</td>
+      <td>${escapeHtml(s.resourceTeacher||'—')}</td>
+      <td>${escapeHtml(s.notes||'')||'<span class="hint">—</span>'}</td>
+      <td>
+        <div class="cell-actions">
+          <button class="icon-btn" title="編輯" onclick="openStudentModal('${s.id}')">✎</button>
+          <button class="icon-btn" title="學籍異動" onclick="openStatusModal('${s.id}')">⇄</button>
+          <button class="icon-btn del" title="刪除" onclick="deleteStudent('${s.id}')">✕</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">學生資料 Roster</div>
+        <h1>特殊教育需求學生名冊</h1>
+        <div class="sub">在學 ${activeCount} 名・篩選後顯示 ${list.length} 名</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn" onclick="exportStudentsDeidentified()">🔒 去識別化匯出（列印/PDF）</button>
+        <button class="btn" onclick="exportStudentsCSV()">匯出 CSV</button>
+        <button class="btn btn-primary" onclick="openStudentModal()">＋ 新增學生</button>
+      </div>
+    </div>
+
+    <div class="dept-chips">
+      <div class="year-chip ${!UI.stuDept?'active':''}" onclick="UI.stuDept=''; renderStudents();">全部科別</div>
+      ${depts.map(d=>`<div class="year-chip ${UI.stuDept===d?'active':''}" onclick="UI.stuDept='${d}'; renderStudents();">${escapeHtml(deptLabel(d))}（${d}）</div>`).join('')}
+    </div>
+
+    <div class="filters">
+      <input class="search" placeholder="搜尋姓名／學號／班級…" value="${escapeHtml(UI.stuQuery)}" oninput="UI.stuQuery=this.value; renderStudents();">
+      <select onchange="UI.stuClass=this.value; renderStudents();">
+        <option value="">全部班級</option>
+        ${classes.map(c=>`<option value="${escapeHtml(c)}" ${UI.stuClass===c?'selected':''}>${escapeHtml(c)}</option>`).join('')}
+      </select>
+      <select onchange="UI.stuCategory=this.value; renderStudents();">
+        <option value="">全部類別</option>
+        ${cats.map(c=>`<option value="${escapeHtml(c)}" ${UI.stuCategory===c?'selected':''}>${escapeHtml(c)}</option>`).join('')}
+      </select>
+      <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-soft); font-weight:500; white-space:nowrap;">
+        <input type="checkbox" style="width:auto;" ${UI.stuShowArchived?'checked':''} onchange="UI.stuShowArchived=this.checked; renderStudents();"> 顯示已封存（歷屆）學生
+      </label>
+      ${(UI.stuQuery||UI.stuClass||UI.stuCategory||UI.stuDept) ? `<button class="btn btn-ghost btn-sm" onclick="UI.stuQuery='';UI.stuClass='';UI.stuCategory='';UI.stuDept='';renderStudents();">清除篩選</button>` : ''}
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>編號</th><th>班別／座號</th><th>學號</th><th>姓名</th><th>特教類別</th>
+          <th>畢業國中／入學管道</th><th>導師</th><th>輔導教師</th><th>備註</th><th>操作</th>
+        </tr></thead>
+        <tbody>
+          ${rows || `<tr><td colspan="10"><div class="empty-state"><div class="big">🔍</div>找不到符合條件的學生</div></td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* ---------------- assessment sub-form (used inside student modal) ---------------- */
+function renderAssessCategoryHtml(s, cat){
+  const a = s.assessment;
+  const itemsHtml = cat.items.map(item=>{
+    const data = a[cat.id][item.id];
+    const optsHtml = item.options.map((opt,idx)=>{
+      const name = `as_${cat.id}_${item.id}_${idx}`;
+      const checked = (data.selected||[]).includes(opt);
+      return `<label class="opt-chip"><input type="checkbox" name="${name}" value="${escapeHtml(opt)}" ${checked?'checked':''}> ${escapeHtml(opt)}</label>`;
+    }).join('');
+    return `<div class="assess-item">
+      <div class="assess-item-label">${escapeHtml(item.label)}</div>
+      <div class="assess-options">
+        ${optsHtml}
+        <input class="opt-other" type="text" name="as_${cat.id}_${item.id}_other" placeholder="其他（請輸入）" value="${escapeHtml(data.other||'')}">
+      </div>
+    </div>`;
+  }).join('');
+  return `<details class="assess-cat">
+    <summary>${escapeHtml(cat.label)}</summary>
+    <div class="assess-cat-body">${itemsHtml}</div>
+  </details>`;
+}
+function readAssessFromForm(form){
+  const out = {
+    assessor: '',
+    assessDate: '',
+    iepDate: form.elements['iepDate']?.value || '',
+    note: '',
+  };
+  ASSESS_SCHEMA.forEach(cat=>{
+    out[cat.id] = {};
+    cat.items.forEach(item=>{
+      const selected = [];
+      item.options.forEach((opt,idx)=>{
+        const el = form.elements[`as_${cat.id}_${item.id}_${idx}`];
+        if(el && el.checked) selected.push(opt);
+      });
+      const otherEl = form.elements[`as_${cat.id}_${item.id}_other`];
+      const other = otherEl ? otherEl.value.trim() : '';
+      out[cat.id][item.id] = {checked: selected.length>0 || !!other, selected, other};
+    });
+  });
+  return out;
+}
+
+function openStudentModal(id){
+  const editing = id ? DATA.students.find(s=>s.id===id) : null;
+  const s = editing || {
+    id: uid('stu'), class:'', seat:'', studentId:'', name:'', gender:'男', category:'學習障礙', condition:'',
+    juniorHigh:'', admission:'', homeroomTeacher:'', resourceTeacher:'', pullout:'', addon:'', special:'', coteach:'',
+    birthDate:'', nationalId:'', studentPhone:'', parentName:'', parentPhone:'', futurePlan:'', notes:'',
+    status:'在學', statusDate:'',
+  };
+  ensureAssessment(s);
+  const catOptions = ['學習障礙','自閉症','肢體障礙','情緒障礙','多重障礙','智能障礙','視覺障礙','聽覺障礙','語言障礙','身體病弱','其他障礙'];
+
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal wide">
+        <div class="modal-head">
+          <h3>${editing? '編輯學生資料':'新增學生'}</h3>
+          <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <form id="student-form">
+          <div class="eyebrow">基本資料</div>
+          <div class="field-row3">
+            <div class="field"><label>班級</label><input name="class" value="${escapeHtml(s.class)}" required></div>
+            <div class="field"><label>座號</label><input name="seat" type="number" value="${escapeHtml(s.seat)}"></div>
+            <div class="field"><label>學號</label><input name="studentId" value="${escapeHtml(s.studentId)}" required></div>
+          </div>
+          <div class="field-row3">
+            <div class="field"><label>姓名</label><input name="name" value="${escapeHtml(s.name)}" required></div>
+            <div class="field"><label>性別</label>
+              <select name="gender"><option ${s.gender==='男'?'selected':''}>男</option><option ${s.gender==='女'?'selected':''}>女</option></select>
+            </div>
+            <div class="field"><label>出生年月日</label><input name="birthDate" type="text" placeholder="YYYY-MM-DD" value="${escapeHtml(s.birthDate)}"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>身分證字號</label><input name="nationalId" value="${escapeHtml(s.nationalId)}"></div>
+            <div class="field"><label>學生手機</label><input name="studentPhone" value="${escapeHtml(s.studentPhone)}"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>家長姓名</label><input name="parentName" value="${escapeHtml(s.parentName)}"></div>
+            <div class="field"><label>家長手機</label><input name="parentPhone" value="${escapeHtml(s.parentPhone)}"></div>
+          </div>
+
+          <div class="eyebrow" style="margin-top:6px;">特教資料</div>
+          <div class="field-row">
+            <div class="field"><label>特教類別</label>
+              <select name="category">${catOptions.map(c=>`<option ${s.category===c?'selected':''}>${c}</option>`).join('')}</select>
+            </div>
+            <div class="field"><label>症狀／障礙程度</label><input name="condition" value="${escapeHtml(s.condition)}"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>畢業國中／前一就讀學校</label><input name="juniorHigh" value="${escapeHtml(s.juniorHigh)}"></div>
+            <div class="field"><label>入學管道</label><input name="admission" value="${escapeHtml(s.admission)}"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>導師</label><input name="homeroomTeacher" value="${escapeHtml(s.homeroomTeacher)}"></div>
+            <div class="field"><label>輔導教師</label><input name="resourceTeacher" value="${escapeHtml(s.resourceTeacher)}"></div>
+          </div>
+
+          <div class="eyebrow" style="margin-top:10px;">特殊教育需求（IEP會議討論通過）</div>
+          <div class="hint" style="margin:-2px 0 10px;">點擊各分類展開，勾選有提供之服務項目；未勾選任何項目即視為「無」。</div>
+          ${ASSESS_SCHEMA.map(cat=>renderAssessCategoryHtml(s,cat)).join('')}
+          <div class="field" style="margin-top:12px;"><label>IEP會議日期</label><input name="iepDate" type="date" value="${escapeHtml(s.assessment.iepDate)}"></div>
+          <div class="field"><label>備註</label><textarea name="notes">${escapeHtml(s.notes)}</textarea></div>
+
+          <div class="eyebrow" style="margin-top:6px;">未來發展</div>
+          <div class="field"><label>就業／升學／就養規劃</label><input name="futurePlan" value="${escapeHtml(s.futurePlan)}"></div>
+        </form>
+        <div class="modal-foot">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn btn-primary" onclick="saveStudent('${s.id}', ${editing? 'true':'false'})">儲存</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function saveStudent(id, isEditing){
+  const form = document.getElementById('student-form');
+  const fd = new FormData(form);
+  if(!fd.get('name') || !fd.get('class') || !fd.get('studentId')){
+    showToast('請填寫班級／學號／姓名');
+    return;
+  }
+  const skipKeys = new Set(['iepDate']);
+  const obj = {id};
+  for(const [k,v] of fd.entries()){
+    if(skipKeys.has(k) || k.startsWith('as_')) continue;
+    obj[k] = v;
+  }
+  obj.seat = obj.seat ? Number(obj.seat) : null;
+  obj.assessment = readAssessFromForm(form);
+
+  if(isEditing){
+    const idx = DATA.students.findIndex(s=>s.id===id);
+    DATA.students[idx] = {...DATA.students[idx], ...obj};
+  }else{
+    obj.status = '在學'; obj.statusDate = '';
+    DATA.students.push(obj);
+  }
+  scheduleSave();
+  closeModal();
+  renderStudents();
+  showToast(isEditing? '已更新學生資料':'已新增學生');
+}
+
+function deleteStudent(id){
+  const s = DATA.students.find(x=>x.id===id);
+  if(!s) return;
+  if(!confirm(`確定要刪除「${s.name}」的資料嗎？此動作無法復原。若僅是學生畢業／轉學／休學，建議改用「學籍異動」功能保留歷史紀錄。`)) return;
+  DATA.students = DATA.students.filter(x=>x.id!==id);
+  scheduleSave();
+  renderStudents();
+  showToast('已刪除學生資料');
+}
+
+/* ---------------- status change / archive ---------------- */
+function openStatusModal(id){
+  const s = DATA.students.find(x=>x.id===id);
+  if(!s) return;
+  if(!s.statusLog) s.statusLog = [];
+  const logHtml = s.statusLog.length
+    ? s.statusLog.slice().reverse().map(l=>`<div class="status-log-row">
+        <span class="hint">${escapeHtml(l.date||'—')}</span>
+        <span class="badge-cat" style="background:${statusBadgeColor(l.status).bg};color:${statusBadgeColor(l.status).fg};">${escapeHtml(l.status)}</span>
+        ${l.reason?`<span>${escapeHtml(l.reason)}</span>`:''}
+      </div>`).join('')
+    : '<div class="hint">尚無異動紀錄</div>';
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal">
+        <div class="modal-head">
+          <h3>學籍異動 — ${escapeHtml(s.name)}</h3>
+          <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <form id="status-form">
+          <div class="field"><label>新狀態</label>
+            <select name="status">${STATUS_OPTIONS.map(o=>`<option ${(s.status||'在學')===o?'selected':''}>${o}</option>`).join('')}</select>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>異動日期</label><input name="statusDate" type="date" value="${escapeHtml(s.statusDate||'')}"></div>
+            <div class="field"><label>異動原因（選填）</label><input name="statusReason" placeholder="例：轉至他校就讀"></div>
+          </div>
+          <div class="hint">設為「休學／轉學／畢業」後，該生從預設名冊隱藏，可勾選「顯示已封存學生」查詢。每次異動均會記錄至歷史紀錄。</div>
+        </form>
+        <div class="eyebrow" style="margin-top:14px; margin-bottom:8px;">異動歷史紀錄</div>
+        <div class="status-log">${logHtml}</div>
+        <div class="modal-foot">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn btn-primary" onclick="saveStatus('${id}')">確認異動</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function saveStatus(id){
+  const s = DATA.students.find(x=>x.id===id);
+  const fd = new FormData(document.getElementById('status-form'));
+  const status = fd.get('status');
+  const date = fd.get('statusDate') || todayStr();
+  const reason = fd.get('statusReason') || '';
+  // Only log if status actually changed
+  if(status !== (s.status||'在學')){
+    if(!s.statusLog) s.statusLog = [];
+    s.statusLog.push({date, status, reason});
+  }
+  s.status = status;
+  s.statusDate = date;
+  s.archived = status !== '在學';
+  scheduleSave();
+  closeModal();
+  renderStudents();
+  showToast(s.archived ? `已將「${s.name}」標記為${status}並封存資料` : `已將「${s.name}」恢復為在學狀態`);
+}
+
+/* ---------------- exports ---------------- */
+function exportStudentsCSV(){
+  const headers = ['編號','班級','座號','學號','姓名','性別','特教類別','症狀/障礙程度','畢業國中','入學管道','導師','輔導教師','抽離','外加','特需','協同','狀態'];
+  const rows = filteredStudents().map(s=>[studentDisplayId(s),s.class,s.seat,s.studentId,s.name,s.gender,s.category,s.condition,s.juniorHigh,s.admission,s.homeroomTeacher,s.resourceTeacher,s.pullout,s.addon,s.special,s.coteach,s.status||'在學']);
+  let csv = '\uFEFF' + headers.join(',') + '\n' + rows.map(r=>r.map(v=>`"${(v??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `學生名冊_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+function exportStudentsDeidentified(){
+  const list = filteredStudents();
+  const school = (DATA.settings && DATA.settings.schoolName) || '';
+  const rows = list.map(s=>`<tr>
+    <td>${studentDisplayId(s)}</td>
+    <td>${escapeHtml(s.class)}</td>
+    <td>${escapeHtml(s.seat??'—')}</td>
+    <td>${escapeHtml(s.studentId||'—')}</td>
+    <td>${escapeHtml(maskName(s.name))}</td>
+    <td>${escapeHtml(s.gender||'—')}</td>
+    <td>${escapeHtml(s.category)}</td>
+    <td>${escapeHtml(s.condition||'—')}</td>
+    <td>${escapeHtml(s.juniorHigh||'—')}</td>
+    <td>${escapeHtml(s.admission||'—')}</td>
+    <td>${escapeHtml(s.homeroomTeacher||'—')}</td>
+  </tr>`).join('');
+  const body = `
+    <h1>${escapeHtml(school)} 特殊教育資源班學生名冊（去識別化）</h1>
+    <div class="meta">列印日期：${todayStr()}　共 ${list.length} 名學生　＊姓名已去識別化（王○○），僅供校內各處室業務參考</div>
+    <table>
+      <thead><tr><th>編號</th><th>班別</th><th>座號</th><th>學號</th><th>姓名</th><th>性別</th><th>特教類別</th><th>症狀/障礙程度</th><th>畢業國中</th><th>入學管道</th><th>導師</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="11">無資料</td></tr>'}</tbody>
+    </table>
+    <div class="footnote">本表姓名欄經去識別化處理（僅顯示姓氏＋○），不得作為完整身分辨識。如需完整資料請洽特教資源班。</div>
+  `;
+  openPrintWindow('學生名冊（去識別化）', body);
+}
+
+</script>
+<script>
+/* ---------------- Schedule tab ---------------- */
+const DAY_NAMES = ['一','二','三','四','五'];
+
+/* Parse a cell's text value into structured fields based on schedule type.
+   group   → lines[0]=課程名稱, rest=學生名單
+   teacher → lines[0]=課程名稱, lines[1]=資源班(fixed), lines[2]=上課教室 */
+function parseCellGroup(val){
+  const lines = (val||'').split('\n');
+  return { courseName: lines[0]||'', students: lines.slice(1).join('\n') };
+}
+function parseCellTeacher(val){
+  const lines = (val||'').split('\n');
+  return { courseName: lines[0]||'', room: lines[2]||'' };
+}
+function buildCellGroup(courseName, students){
+  const parts = [courseName.trim()];
+  if(students.trim()) parts.push(...students.split('\n').map(l=>l.trim()).filter(Boolean));
+  return parts.join('\n');
+}
+function buildCellTeacher(courseName, room){
+  const parts = [courseName.trim(), '資源班', room.trim()];
+  return parts.filter((_,i)=>i===0||parts[i]).join('\n');
+}
+
+function renderSchedule(){
+  const hasSetting = DATA.settings && DATA.settings.schoolName;
+  const school = hasSetting ? DATA.settings.schoolName : '';
+
+  const cards = DATA.schedules.map(sch=>{
+    const isTeacher = sch.schedType === 'teacher';
+    const rows = sch.periods.map(p=>{
+      const dayCells = p.days.map((d,di)=>{
+        const filled = d ? 'filled' : '';
+        return `<div class="sched-cell editable ${filled}" onclick="openCellModal('${sch.id}','${p.id}',${di})">${d ? nl2br(d) : '<span class="hint">　</span>'}</div>`;
+      }).join('');
+      return `<div class="sched-cell sched-period">${escapeHtml(p.period)}</div><div class="sched-cell sched-time">${escapeHtml(p.time||'')}</div>${dayCells}`;
+    }).join('');
+
+    const exportBtn = `<button class="btn btn-sm" onclick="exportSchedulePDF('${sch.id}')">⤓ 匯出 PDF</button>`;
+    const typeLabel = isTeacher
+      ? `<span class="plan-badge" style="margin-left:8px;">教師課表</span>`
+      : `<span class="plan-badge" style="background:var(--primary-soft); color:var(--primary-dark); margin-left:8px;">課程分組</span>`;
+
+    return `<div class="panel sched-card">
+      <div class="panel-head">
+        <div>
+          <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+            <h3 contenteditable="true" spellcheck="false" onblur="renameSchedule('${sch.id}', this.textContent)" title="點擊可編輯標題" style="cursor:text; outline:none;">${escapeHtml(sch.title)}</h3>
+            ${typeLabel}
+          </div>
+        </div>
+        <div class="cell-actions">
+          <button class="btn btn-sm" onclick="addPeriod('${sch.id}')">＋ 新增節次</button>
+          ${exportBtn}
+          <button class="btn btn-sm btn-danger" onclick="deleteSchedule('${sch.id}')">刪除整份課表</button>
+        </div>
+      </div>
+      <div class="sched-grid">
+        <div class="sched-cell sched-head">節次</div><div class="sched-cell sched-head">時間</div>
+        ${DAY_NAMES.map(d=>`<div class="sched-cell sched-head">${d}</div>`).join('')}
+        ${rows}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">分組與課表 Schedule</div>
+        <h1>課程分組與教師課表</h1>
+        <div class="sub">點擊任一格子即可編輯，課程分組可填課程與學生名單，教師課表可填課程與教室</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn" onclick="addSchedule('group')">＋ 新增課程分組</button>
+        <button class="btn btn-primary" onclick="addSchedule('teacher')">＋ 新增教師課表</button>
+      </div>
+    </div>
+    ${cards || `<div class="panel"><div class="empty-state"><div class="big">🗓️</div>尚未建立任何課表，點選右上角新增。</div></div>`}
+  `;
+}
+
+function openCellModal(schId, periodId, dayIdx){
+  const sch = DATA.schedules.find(s=>s.id===schId);
+  const p = sch.periods.find(p=>p.id===periodId);
+  const val = p.days[dayIdx] || '';
+  const isTeacher = sch.schedType === 'teacher';
+  const title = `第${escapeHtml(p.period)}節・週${DAY_NAMES[dayIdx]}`;
+
+  let formHtml;
+  if(isTeacher){
+    const parsed = parseCellTeacher(val);
+    formHtml = `
+      <div class="field">
+        <label>課程名稱</label>
+        <input id="cell-course" value="${escapeHtml(parsed.courseName)}" placeholder="例：英語文">
+      </div>
+      <div class="field" style="opacity:.6;">
+        <label>資源班（固定）</label>
+        <input value="資源班" disabled>
+      </div>
+      <div class="field">
+        <label>上課教室</label>
+        <input id="cell-room" value="${escapeHtml(parsed.room)}" placeholder="例：資源教室">
+      </div>`;
+  } else {
+    const parsed = parseCellGroup(val);
+    formHtml = `
+      <div class="field">
+        <label>課程名稱</label>
+        <input id="cell-course" value="${escapeHtml(parsed.courseName)}" placeholder="例：英語文">
+      </div>
+      <div class="field">
+        <label>學生名單（每行一位，或以「、」分隔）</label>
+        <textarea id="cell-students" style="min-height:80px;">${escapeHtml(parsed.students)}</textarea>
+      </div>`;
+  }
+
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal">
+        <div class="modal-head">
+          <h3>編輯格子 — ${title}</h3>
+          <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        ${formHtml}
+        <div class="modal-foot">
+          <button class="btn btn-ghost" onclick="setCellValue('${schId}','${periodId}',${dayIdx},'')">清空</button>
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn btn-primary" onclick="saveCellFromModal('${schId}','${periodId}',${dayIdx},'${isTeacher?'teacher':'group'}')">儲存</button>
+        </div>
+      </div>
+    </div>
+  `;
+  setTimeout(()=>document.getElementById('cell-course')?.focus(), 30);
+}
+
+function saveCellFromModal(schId, periodId, dayIdx, type){
+  const course = document.getElementById('cell-course')?.value || '';
+  let v;
+  if(type === 'teacher'){
+    const room = document.getElementById('cell-room')?.value || '';
+    v = buildCellTeacher(course, room);
+  } else {
+    const students = document.getElementById('cell-students')?.value || '';
+    v = buildCellGroup(course, students);
+  }
+  setCellValue(schId, periodId, dayIdx, v);
+}
+
+function setCellValue(schId, periodId, dayIdx, v){
+  const sch = DATA.schedules.find(s=>s.id===schId);
+  const p = sch.periods.find(p=>p.id===periodId);
+  p.days[dayIdx] = v.trim() || null;
+  scheduleSave();
+  closeModal();
+  renderSchedule();
+}
+function renameSchedule(schId, newTitle){
+  const sch = DATA.schedules.find(s=>s.id===schId);
+  const t = newTitle.trim();
+  if(t && t!==sch.title){ sch.title = t; scheduleSave(); showToast('已更新課表標題'); }
+}
+function addPeriod(schId){
+  const sch = DATA.schedules.find(s=>s.id===schId);
+  sch.periods.push({id: uid('p'), period: String(sch.periods.length+1), time:'', days:[null,null,null,null,null]});
+  scheduleSave();
+  renderSchedule();
+}
+function addSchedule(type){
+  const isTeacher = type==='teacher';
+  const defaultTitle = isTeacher ? '新教師課表' : '新課程分組';
+  const title = prompt(`請輸入${isTeacher?'教師課表':'課程分組'}標題`, defaultTitle);
+  if(title===null) return;
+  const DEFAULT_TIMES = ["08:10~09:00", "09:10~10:00", "10:10~11:00", "11:10~12:00", "13:15~14:05", "14:15~15:05", "15:25~16:15"];
+  DATA.schedules.push({
+    id: uid('sch'), title: title || defaultTitle,
+    schedType: type || 'group',
+    periods: Array.from({length:7}, (_,i)=>({id:uid('p'), period:String(i+1), time:DEFAULT_TIMES[i]||'', days:[null,null,null,null,null]}))
+  });
+  scheduleSave();
+  renderSchedule();
+  showToast('已新增課表');
+}
+function deleteSchedule(schId){
+  const sch = DATA.schedules.find(s=>s.id===schId);
+  if(!confirm(`確定要刪除「${sch.title}」整份課表嗎？`)) return;
+  DATA.schedules = DATA.schedules.filter(s=>s.id!==schId);
+  scheduleSave();
+  renderSchedule();
+  showToast('已刪除課表');
+}
+
+/* ---------------- PDF export for teacher schedule ---------------- */
+function exportSchedulePDF(schId){
+  const sch = DATA.schedules.find(s=>s.id===schId);
+  if(!sch) return;
+  const school = (DATA.settings && DATA.settings.schoolName) || '';
+  const headerRow = `<tr><th>節次</th><th>時間</th>${DAY_NAMES.map(d=>`<th>${d}</th>`).join('')}</tr>`;
+  const bodyRows = sch.periods.map(p=>{
+    const cells = p.days.map(d=>`<td>${d ? nl2br(d) : ''}</td>`).join('');
+    return `<tr><td style="text-align:center; font-weight:700;">${escapeHtml(p.period)}</td><td style="text-align:center; font-size:11px;">${escapeHtml(p.time||'')}</td>${cells}</tr>`;
+  }).join('');
+  const body = `
+    <h1>${escapeHtml(school)}</h1>
+    <h2 style="font-size:14px; font-family:sans-serif; color:#647265; font-weight:500; margin:2px 0 18px;">${escapeHtml(sch.title)}</h2>
+    <table>
+      <thead>${headerRow}</thead>
+      <tbody>${bodyRows}</tbody>
+    </table>
+    <div style="margin-top:36px; font-size:11px; color:#94A092;">列印日期：${todayStr()}　供教務處排課參考</div>
+  `;
+  openPrintWindow(sch.title, body);
+}
+
+</script>
+<script>
+/* ---------------- Budget tab ---------------- */
+function notesAsList(noteText){
+  const lines = (noteText||'').split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return '';
+  if(lines.length===1) return escapeHtml(lines[0]);
+  return `<ul class="notes-list">${lines.map(l=>`<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
+}
+function renderBudget(){
+  const years = tableYearList();
+  // Resolve 'current' → latest year that has at least one non-completed table
+  let activeYear = UI.budgetYear;
+  if(activeYear === 'current'){
+    const ongoing = DATA.budgetTables.filter(t=>!t.completed);
+    if(ongoing.length){
+      const latestOngoing = ongoing.map(t=>t.year).sort((a,b)=>Number(b)-Number(a))[0];
+      activeYear = latestOngoing;
+    } else {
+      activeYear = 'all';
+    }
+  }
+  const tables = activeYear==='all' ? DATA.budgetTables : DATA.budgetTables.filter(t=>t.year===activeYear);
+  const showCompleted = UI.budgetShowCompleted || false;
+  const filteredTables = showCompleted ? tables : tables.filter(t=>!t.completed);
+  const sorted = [...filteredTables].sort((a,b)=> Number(b.year)-Number(a.year));
+
+  // trend chart data (all years)
+  const trendData = years.slice().sort((a,b)=>Number(a)-Number(b)).map(y=>{
+    const ts = DATA.budgetTables.filter(t=>t.year===y);
+    let budget=0, used=0;
+    ts.forEach(t=>{ const tr=t.rows.find(r=>r.isTotal); if(tr){ budget+=n(tr.budget); used+=n(tr.spent)+n(tr.certified)+n(tr.pending);} });
+    return {y, budget, used};
+  });
+  const maxBudget = Math.max(1, ...trendData.map(d=>d.budget));
+  const trendHtml = trendData.map(d=>{
+    const bh = Math.round(d.budget/maxBudget*120);
+    const uh = Math.round(d.used/maxBudget*120);
+    return `<div class="trend-bar-wrap" title="${d.y}年度：預算 ${fmtNum(d.budget)}／已用 ${fmtNum(d.used)}">
+      <div style="position:relative; width:100%; height:${bh}px; max-width:30px;">
+        <div class="trend-bar" style="position:absolute; bottom:0; left:0; right:0; height:${bh}px; background:var(--line-soft);"></div>
+        <div class="trend-bar" style="position:absolute; bottom:0; left:0; right:0; height:${uh}px; background:var(--accent);"></div>
+      </div>
+      <div class="trend-label">${d.y}</div>
+    </div>`;
+  }).join('');
+
+  const tableCards = sorted.map(t=>renderBudgetTableCard(t)).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">經費管理 Budget</div>
+        <h1>資源班經費運用結報</h1>
+        <div class="sub">整合歷年身障輔導經費、特教資源經費及學習扶助等計畫資料</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn" onclick="exportBudgetCSV()">匯出 CSV</button>
+        <button class="btn btn-primary" onclick="openTableModal()">＋ 新增經費計畫</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>歷年經費執行趨勢</h3>
+        <div class="hint"><span style="color:var(--accent);">■</span> 已運用　<span style="color:var(--line-soft);">■</span> 預算總額</div>
+      </div>
+      <div class="trend-chart">${trendHtml || '<div class="hint">尚無資料</div>'}</div>
+    </div>
+
+    <div class="year-chips">
+      <div class="year-chip ${activeYear==='all'?'active':''}" onclick="UI.budgetYear='all'; renderBudget();">全部年度</div>
+      ${years.map(y=>`<div class="year-chip ${activeYear===y?'active':''}" onclick="UI.budgetYear='${y}'; renderBudget();">${y} 年度</div>`).join('')}
+      <label class="year-chip" style="cursor:pointer; display:inline-flex; align-items:center; gap:5px; font-weight:500;">
+        <input type="checkbox" style="width:auto;" ${showCompleted?'checked':''} onchange="UI.budgetShowCompleted=this.checked; renderBudget();"> 顯示已完成結報
+      </label>
+    </div>
+
+    ${tableCards || `<div class="panel"><div class="empty-state"><div class="big">💰</div>此年度尚無經費資料</div></div>`}
+  `;
+}
+
+function renderBudgetTableCard(t){
+  const dataRows = t.rows.filter(r=>!r.isTotal);
+  const totalRow = t.rows.find(r=>r.isTotal);
+  const rate = execRate(t);
+  const rowsHtml = dataRows.map(r=>{
+    const noteKey = t.id+'_'+r.id;
+    const expanded = UI.expandedNotes[noteKey];
+    const noteText = r.notes || '';
+    const lines = noteText.split('\n').map(l=>l.trim()).filter(Boolean);
+    const showToggle = noteText.length > 60 || lines.length > 2;
+    const fullList = notesAsList(noteText);
+    const shortList = notesAsList(lines.slice(0,2).join('\n'));
+    return `<tr>
+      <td>${escapeHtml(r.item||'')}</td>
+      <td>${escapeHtml(r.name||'')}</td>
+      <td class="num">${fmtNum(r.budget)}</td>
+      <td class="num">${fmtNum(r.spent)}</td>
+      <td class="num">${fmtNum(r.certified)}</td>
+      <td class="num">${fmtNum(r.pending)}</td>
+      <td class="num" style="color:${n(r.balance)<0?'var(--danger)':'inherit'}; font-weight:700;">${fmtNum(r.balance)}</td>
+      <td class="notes-cell" style="vertical-align:top;">
+        ${showToggle && !expanded ? shortList + (lines.length>2 ? '<span class="hint">…</span>' : '') : fullList}
+        ${showToggle ? `<div><button class="btn btn-ghost btn-sm" style="padding:2px 6px; margin-top:3px;" onclick="UI.expandedNotes['${noteKey}']=${!expanded}; renderBudget();">${expanded?'收合':'展開'}</button></div>` : ''}
+      </td>
+      <td>
+        <div class="cell-actions">
+          <button class="icon-btn" title="編輯" onclick="openRowModal('${t.id}','${r.id}')">✎</button>
+          <button class="icon-btn del" title="刪除" onclick="deleteRow('${t.id}','${r.id}')">✕</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const due = t.dueDate;
+  const dueDays = due ? daysUntil(due) : null;
+  let dueBadge = '';
+  if(due){
+    let cls='ok', label=`應結報日期 ${fmtDate(due)}`;
+    if(dueDays<0){ cls='danger'; label += `（已逾期 ${Math.abs(dueDays)} 天）`; }
+    else if(dueDays<=14){ cls='warning'; label += `（剩 ${dueDays} 天）`; }
+    else { label += `（尚有 ${dueDays} 天）`; }
+    dueBadge = `<span class="due-badge ${cls}">${label}</span>`;
+  }
+  return `<div class="panel budget-table-card">
+    <div class="panel-head">
+      <div>
+        <h4>${escapeHtml(t.title)}</h4>
+        <div style="margin-top:5px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;"><span class="plan-badge">${escapeHtml(t.planLabel)}</span>
+          <span class="hint">執行率 ${Math.round(rate*100)}%　${totalRow? '計畫期程：'+escapeHtml((dataRows.find(r=>r.period)||{}).period || '—') : ''}</span>
+          ${dueBadge}
+          ${t.completed ? `<span class="due-badge ok" style="cursor:pointer;" onclick="toggleCompleted('${t.id}')">✓ 已完成結報</span>` : `<button class="btn btn-sm" onclick="toggleCompleted('${t.id}')">標記為已完成結報</button>`}
+        </div>
+      </div>
+      <div class="cell-actions">
+        <button class="btn btn-sm" onclick="openRowModal('${t.id}')">＋ 新增項目</button>
+        <button class="btn btn-sm" onclick="openTableModal('${t.id}')">編輯計畫</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteTable('${t.id}')">刪除整份</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>項目</th><th>名稱</th><th>預算數</th><th>實支數</th><th>核銷簽證數</th><th>請購未銷數</th><th>餘額</th><th>運用情形</th><th>操作</th>
+        </tr></thead>
+        <tbody>
+          ${rowsHtml || `<tr><td colspan="9"><div class="hint" style="padding:14px 0;">尚無項目，點選「新增項目」加入第一筆資料</div></td></tr>`}
+          ${totalRow ? `<tr class="total-row">
+            <td colspan="2">合計</td>
+            <td class="num">${fmtNum(totalRow.budget)}</td>
+            <td class="num">${fmtNum(totalRow.spent)}</td>
+            <td class="num">${fmtNum(totalRow.certified)}</td>
+            <td class="num">${fmtNum(totalRow.pending)}</td>
+            <td class="num">${fmtNum(totalRow.balance)}</td>
+            <td colspan="2"></td>
+          </tr>` : ''}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function openRowModal(tableId, rowId){
+  const table = DATA.budgetTables.find(t=>t.id===tableId);
+  const editing = rowId ? table.rows.find(r=>r.id===rowId) : null;
+  const r = editing || {id: uid('row'), item:'業務費', name:'', applied:'', budget:'', spent:'', certified:'', pending:'', balance:'', period:'', notes:''};
+  const itemOptions = ['人事費','業務費','工讀費','差旅費','材料費','鐘點費','午膳費','雜支','其他'];
+
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal wide">
+        <div class="modal-head">
+          <h3>${editing? '編輯經費項目':'新增經費項目'}</h3>
+          <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <form id="row-form">
+          <div class="field-row">
+            <div class="field"><label>項目</label>
+              <input name="item" list="item-options" value="${escapeHtml(r.item)}">
+              <datalist id="item-options">${itemOptions.map(o=>`<option value="${o}">`).join('')}</datalist>
+            </div>
+            <div class="field"><label>名稱</label><input name="name" value="${escapeHtml(r.name)}"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>預算／核定數</label><input name="budget" type="number" id="f-budget" value="${escapeHtml(r.budget)}" oninput="suggestBalance()"></div>
+            <div class="field"></div>
+          </div>
+          <div class="field-row3">
+            <div class="field"><label>實支數</label><input name="spent" type="number" id="f-spent" value="${escapeHtml(r.spent)}" oninput="suggestBalance()"></div>
+            <div class="field"><label>核銷簽證數</label><input name="certified" type="number" id="f-certified" value="${escapeHtml(r.certified)}" oninput="suggestBalance()"></div>
+            <div class="field"><label>請購未銷數</label><input name="pending" type="number" id="f-pending" value="${escapeHtml(r.pending)}" oninput="suggestBalance()"></div>
+          </div>
+          <div class="field"><label>餘額（依公式自動建議，亦可手動調整）</label><input name="balance" type="number" id="f-balance" value="${escapeHtml(r.balance)}"></div>
+          <div class="field"><label>運用情形說明</label><textarea name="notes" style="min-height:90px;">${escapeHtml(r.notes)}</textarea></div>
+        </form>
+        <div class="modal-foot">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn btn-primary" onclick="saveRow('${tableId}','${r.id}', ${editing? 'true':'false'})">儲存</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function suggestBalance(){
+  const b = Number(document.getElementById('f-budget').value)||0;
+  const s = Number(document.getElementById('f-spent').value)||0;
+  const c = Number(document.getElementById('f-certified').value)||0;
+  const p = Number(document.getElementById('f-pending').value)||0;
+  document.getElementById('f-balance').value = b - s - c - p;
+}
+function saveRow(tableId, rowId, isEditing){
+  const table = DATA.budgetTables.find(t=>t.id===tableId);
+  const fd = new FormData(document.getElementById('row-form'));
+  const obj = {id: rowId, isTotal:false};
+  for(const [k,v] of fd.entries()){
+    if(['applied','budget','spent','certified','pending','balance'].includes(k)){
+      obj[k] = v==='' ? null : Number(v);
+    }else{
+      obj[k] = v;
+    }
+  }
+  if(isEditing){
+    const idx = table.rows.findIndex(r=>r.id===rowId);
+    table.rows[idx] = {...table.rows[idx], ...obj};
+  }else{
+    const insertAt = table.rows.findIndex(r=>r.isTotal);
+    if(insertAt===-1) table.rows.push(obj); else table.rows.splice(insertAt,0,obj);
+  }
+  recalcTableTotal(table);
+  scheduleSave();
+  closeModal();
+  renderBudget();
+  showToast(isEditing? '已更新經費項目':'已新增經費項目');
+}
+function deleteRow(tableId, rowId){
+  const table = DATA.budgetTables.find(t=>t.id===tableId);
+  if(!confirm('確定要刪除此經費項目嗎？')) return;
+  table.rows = table.rows.filter(r=>r.id!==rowId);
+  recalcTableTotal(table);
+  scheduleSave();
+  renderBudget();
+  showToast('已刪除經費項目');
+}
+
+function openTableModal(tableId){
+  const editing = tableId ? DATA.budgetTables.find(t=>t.id===tableId) : null;
+  const t = editing || {id: uid('tbl'), year: String(new Date().getFullYear()-1911), title:'', planLabel:'身障生輔導經費', rows:[]};
+  const planOptions = ['身障生輔導經費','特教資源經費','高職優質化-學習扶助','身障學生學習扶助','其他經費'];
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal">
+        <div class="modal-head">
+          <h3>${editing? '編輯經費計畫':'新增經費計畫'}</h3>
+          <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <form id="table-form">
+          <div class="field-row">
+            <div class="field"><label>年度（民國年）</label><input name="year" value="${escapeHtml(t.year)}" required></div>
+            <div class="field"><label>計畫類別</label>
+              <input name="planLabel" list="plan-options" value="${escapeHtml(t.planLabel)}">
+              <datalist id="plan-options">${planOptions.map(o=>`<option value="${o}">`).join('')}</datalist>
+            </div>
+          </div>
+          <div class="field"><label>表格標題</label><input name="title" value="${escapeHtml(t.title)}" placeholder="例：115年度普通班身心障礙生輔導經費運用預算表" required></div>
+          <div class="field"><label>應結報日期（用於總覽頁面提醒，選填）</label><input name="dueDate" type="date" value="${escapeHtml(t.dueDate||'')}"></div>
+        </form>
+        <div class="modal-foot">
+          ${editing? '' : ''}
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn btn-primary" onclick="saveTable('${t.id}', ${editing? 'true':'false'})">儲存</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function saveTable(tableId, isEditing){
+  const fd = new FormData(document.getElementById('table-form'));
+  const obj = {}; for(const [k,v] of fd.entries()) obj[k]=v;
+  if(isEditing){
+    const idx = DATA.budgetTables.findIndex(t=>t.id===tableId);
+    DATA.budgetTables[idx] = {...DATA.budgetTables[idx], ...obj};
+  }else{
+    DATA.budgetTables.push({id: tableId, ...obj, rows:[]});
+    UI.budgetYear = obj.year;
+  }
+  scheduleSave();
+  closeModal();
+  renderBudget();
+  showToast(isEditing? '已更新經費計畫':'已新增經費計畫，請繼續新增項目');
+}
+function deleteTable(tableId){
+  const t = DATA.budgetTables.find(x=>x.id===tableId);
+  if(!confirm(`確定要刪除整份「${t.title}」經費計畫嗎？此動作無法復原。`)) return;
+  DATA.budgetTables = DATA.budgetTables.filter(x=>x.id!==tableId);
+  scheduleSave();
+  renderBudget();
+  showToast('已刪除經費計畫');
+}
+function toggleCompleted(tableId){
+  const t = DATA.budgetTables.find(x=>x.id===tableId);
+  if(!t) return;
+  t.completed = !t.completed;
+  scheduleSave();
+  renderBudget();
+  showToast(t.completed ? '已標記為完成結報' : '已取消完成結報標記');
+}
+
+function exportBudgetCSV(){
+  const years = UI.budgetYear==='all' ? null : UI.budgetYear;
+  const tables = years ? DATA.budgetTables.filter(t=>t.year===years) : DATA.budgetTables;
+  const headers = ['年度','計畫標題','計畫類別','項目','名稱','預算數','實支數','核銷簽證數','請購未銷數','餘額','計畫期程','運用情形'];
+  const rows = [];
+  tables.forEach(t=>t.rows.forEach(r=>{
+    rows.push([t.year,t.title,t.planLabel,r.item,r.name,r.budget,r.spent,r.certified,r.pending,r.balance,r.period,(r.notes||'').replace(/\n/g,' / ')]);
+  }));
+  let csv = '\uFEFF' + headers.join(',') + '\n' + rows.map(r=>r.map(v=>`"${(v??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `經費報表_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+</script>
+<script>
+/* ---------------- 特推會審查 tab ---------------- */
+function committeeActiveStudents(){
+  return DATA.students.filter(s=>!isArchived(s)).map(s=>{ ensureAssessment(s); return s; });
+}
+function committeeDisplayName(s){
+  return UI.committeeMasked ? maskName(s.name) : s.name;
+}
+function buildCourseTableRows(students){
+  const list = students.filter(s=> s.pullout||s.addon||s.special||s.coteach);
+  return list.map((s,i)=>`<tr>
+    <td class="num">${i+1}</td>
+    <td>${escapeHtml(s.class)}</td>
+    <td>${escapeHtml(committeeDisplayName(s))}</td>
+    <td>${escapeHtml(s.addon||'—')}</td>
+    <td>${escapeHtml(s.pullout||'—')}</td>
+    <td>${escapeHtml(s.special||'—')}</td>
+    <td>${escapeHtml(s.coteach||'—')}</td>
+  </tr>`).join('');
+}
+function buildAggregateRows(students, cat){
+  const total = students.length;
+  const rows = [];
+  cat.items.forEach(item=>{
+    const matched = students.filter(s=> s.assessment[cat.id][item.id] && s.assessment[cat.id][item.id].checked);
+    if(!matched.length) return;
+    const optSet = new Set();
+    matched.forEach(s=>{
+      const d = s.assessment[cat.id][item.id];
+      (d.selected||[]).forEach(o=>optSet.add(o));
+      if(d.other) optSet.add(d.other);
+    });
+    const content = Array.from(optSet).join('、') || '—';
+    const namesList = (total>0 && matched.length===total)
+      ? `全體學生，共 ${total} 位`
+      : matched.map(s=>committeeDisplayName(s)).join('、') + `（共 ${matched.length} 位）`;
+    rows.push({label:item.label, content, namesList});
+  });
+  return rows;
+}
+function aggregateTableHtml(students, catId, tableTitle, footnote){
+  const cat = ASSESS_SCHEMA.find(c=>c.id===catId);
+  const rows = buildAggregateRows(students, cat);
+  const body = rows.length ? rows.map((r,i)=>`<tr>
+      <td class="num">${i+1}</td><td>${escapeHtml(r.label)}</td><td>${escapeHtml(r.content)}</td><td>${escapeHtml(r.namesList)}</td>
+    </tr>`).join('') : `<tr><td colspan="4"><div class="hint" style="padding:10px 0;">尚無資料，請於「學生資料」頁面編輯各生的附件特殊教育需求評估</div></td></tr>`;
+  return `<div class="panel">
+    <div class="panel-head"><h3>${escapeHtml(tableTitle)}</h3></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th style="width:50px;">編號</th><th style="width:160px;">項目</th><th>內容</th><th>學生名單</th></tr></thead>
+      <tbody>${body}</tbody>
+    </table></div>
+    ${footnote ? `<div class="hint" style="margin-top:8px;">${footnote}</div>` : ''}
+  </div>`;
+}
+
+function renderCommittee(){
+  const students = committeeActiveStudents();
+  const period = (DATA.meta && DATA.meta.committeePeriod) || '114學年度第2學期';
+  const courseRows = buildCourseTableRows(students);
+
+  document.getElementById('content').innerHTML = `
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">特推會審查 Committee Review</div>
+        <h1>特殊教育推行委員會審查資料</h1>
+        <div class="sub">彙整學生課程教學、間接服務、考試服務及相關服務與支持策略，供委員會審查使用</div>
+      </div>
+      <div class="topbar-actions">
+        <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-soft); font-weight:500;">
+          <input type="checkbox" style="width:auto;" ${UI.committeeMasked?'checked':''} onchange="UI.committeeMasked=this.checked; renderCommittee();"> 姓名去識別化（建議審查時保持勾選）
+        </label>
+        <button class="btn btn-primary" onclick="exportCommitteeReport()">⤓ 匯出審查資料（列印/PDF）</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="field" style="max-width:320px; margin-bottom:0;">
+        <label>學年度／學期（顯示於報表標題）</label>
+        <input value="${escapeHtml(period)}" onchange="setCommitteePeriod(this.value)">
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>1. 課程教學</h3></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th style="width:50px;">編號</th><th>班級</th><th>姓名</th><th>外加課程</th><th>抽離課程</th><th>特需課程</th><th>協同教學</th></tr></thead>
+        <tbody>${courseRows || `<tr><td colspan="7"><div class="hint" style="padding:10px 0;">目前沒有學生具課程服務資料</div></td></tr>`}</tbody>
+      </table></div>
+    </div>
+
+    ${aggregateTableHtml(students, 'indirect', '2. 間接服務')}
+    ${aggregateTableHtml(students, 'exam', '3. 考試服務')}
+    ${aggregateTableHtml(students, 'support', '4. 相關服務與支持策略')}
+
+    <div class="hint" style="margin-top:4px;">資料來源：「學生資料」頁面中各生附件之特殊教育需求評估。如資料有缺漏，請先至學生資料頁面補填後再匯出。</div>
+  `;
+}
+function setCommitteePeriod(v){
+  if(!DATA.meta) DATA.meta = {};
+  DATA.meta.committeePeriod = v.trim() || '114學年度第2學期';
+  scheduleSave();
+  showToast('已更新報表標題');
+}
+
+function exportCommitteeReport(){
+  const students = committeeActiveStudents();
+  const period = (DATA.meta && DATA.meta.committeePeriod) || '114學年度第2學期';
+  const courseRows = buildCourseTableRows(students);
+  const indirectRows = buildAggregateRows(students, ASSESS_SCHEMA.find(c=>c.id==='indirect'));
+  const examRows = buildAggregateRows(students, ASSESS_SCHEMA.find(c=>c.id==='exam'));
+  const supportRows = buildAggregateRows(students, ASSESS_SCHEMA.find(c=>c.id==='support'));
+
+  const tbl = (title, headRow, rows) => `<h2>${title}</h2><table><thead><tr>${headRow}</tr></thead><tbody>${rows}</tbody></table>`;
+  const aggRowsHtml = (rows) => rows.length ? rows.map((r,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(r.label)}</td><td>${escapeHtml(r.content)}</td><td>${escapeHtml(r.namesList)}</td></tr>`).join('') : `<tr><td colspan="4">尚無資料</td></tr>`;
+
+  const body = `
+    <h1>${escapeHtml((DATA.settings && DATA.settings.schoolName)||'')} ${escapeHtml(period)}特殊教育服務彙整表</h1>
+    <div class="meta">列印日期：${todayStr()}　在學服務學生 ${students.length} 位　${UI.committeeMasked?'＊姓名已去識別化處理':''}</div>
+    ${tbl('1. 課程教學', '<th>編號</th><th>班級</th><th>姓名</th><th>外加課程</th><th>抽離課程</th><th>特需課程</th><th>協同教學</th>', courseRows || '<tr><td colspan="7">無資料</td></tr>')}
+    ${tbl('2. 間接服務', '<th>編號</th><th>項目</th><th>內容</th><th>學生名單</th>', aggRowsHtml(indirectRows))}
+    ${tbl('3. 考試服務', '<th>編號</th><th>項目</th><th>內容</th><th>學生名單</th>', aggRowsHtml(examRows))}
+    ${tbl('4. 相關服務與支持策略', '<th>編號</th><th>項目</th><th>內容</th><th>學生名單</th>', aggRowsHtml(supportRows))}
+    <div style="margin-top:16px; font-size:10.5px; color:#94A092;">資料來源：各生特殊教育需求評估（IEP會議討論通過）</div>
+  `;
+  openPrintWindow('特殊教育服務彙整表', body);
+}
+
+</script>
+<script>
+/* ---------------- 成績管理 tab ---------------- */
+
+/* Grade calculation helpers */
+function gradeNum(v){ return (v===null||v===undefined||v==='') ? null : Number(v); }
+function gradeCalc(e){
+  const daily = gradeNum(e.daily);
+  const e1 = gradeNum(e.exam1)||0, e2 = gradeNum(e.exam2)||0, e3 = gradeNum(e.exam3)||0;
+  const hasExam = [e.exam1,e.exam2,e.exam3].some(x=>x!==null&&x!==undefined&&x!=='');
+  const daily40 = daily!==null ? Math.round(daily*0.4) : null;
+  const avgRaw  = hasExam ? (e1+e2+e3)/3 : null;
+  const avg     = avgRaw!==null ? Math.round(avgRaw) : null;
+  const exam60  = avgRaw!==null ? Math.round(avgRaw*0.6) : null;
+  const total   = daily40!==null && exam60!==null ? daily40+exam60 : null;
+  return {daily40, avg, exam60, total};
+}
+function gradeDisplay(v){ return v===null||v===undefined ? '—' : String(v); }
+
+
+/* Sync a grade entry's display fields from the student roster (non-destructive — stored values
+   are fallbacks used only when the student can't be found in DATA.students). */
+function syncedEntry(e){
+  if(!e.studentId) return e;
+  const s = DATA.students.find(x=>x.studentId===e.studentId);
+  if(!s) return e;
+  return {
+    ...e,
+    class: s.class || e.class,
+    seat: s.seat ?? e.seat,
+    name: s.name || e.name,
+    homeroomTeacher: s.homeroomTeacher || e.homeroomTeacher,
+  };
+}
+
+function renderGrades(){
+  if(!DATA.gradeRecords) DATA.gradeRecords=[];
+  const years = Array.from(new Set(DATA.gradeRecords.map(r=>r.year))).sort((a,b)=>Number(b)-Number(a));
+  const activeYear = UI.gradeYear||'all';
+  const records = activeYear==='all' ? DATA.gradeRecords : DATA.gradeRecords.filter(r=>r.year===activeYear);
+
+  const yearChips = `<div class="year-chips" style="margin-bottom:18px;">
+    <div class="year-chip ${activeYear==='all'?'active':''}" onclick="UI.gradeYear='all';renderGrades();">全部年度</div>
+    ${years.map(y=>`<div class="year-chip ${activeYear===y?'active':''}" onclick="UI.gradeYear='${y}';renderGrades();">${y} 學年度</div>`).join('')}
+  </div>`;
+
+  const cards = records.map(r=>renderGradeCard(r)).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">成績管理 Grades</div>
+        <h1>學生成績管理</h1>
+        <div class="sub">管理資源班各科成績，支援日常考查與定期評量，可匯出 PDF 提供各處室</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="openGradeSheetModal()">＋ 新增成績表</button>
+      </div>
+    </div>
+    ${yearChips}
+    ${cards||`<div class="panel"><div class="empty-state"><div class="big">📊</div>尚無成績記錄，請點選「新增成績表」開始建立。</div></div>`}
+  `;
+}
+
+function renderGradeCard(r){
+  const rows = (r.entries||[]).map(e=>{ e = syncedEntry(e);
+    const c = gradeCalc(e);
+    return `<tr>
+      <td>${escapeHtml(e.class||'—')}</td>
+      <td class="num">${escapeHtml(String(e.seat||'—'))}</td>
+      <td class="num">${escapeHtml(e.studentId||'—')}</td>
+      <td><b>${escapeHtml(e.name||'—')}</b></td>
+      <td>${escapeHtml(e.identityType||'—')}</td>
+      <td class="num grade-input" onclick="openEntryModal('${r.id}','${e.id}')">${gradeDisplay(gradeNum(e.daily))}</td>
+      <td class="num grade-calc">${gradeDisplay(c.daily40)}</td>
+      <td class="num grade-input" onclick="openEntryModal('${r.id}','${e.id}')">${gradeDisplay(gradeNum(e.exam1))}</td>
+      <td class="num grade-input" onclick="openEntryModal('${r.id}','${e.id}')">${gradeDisplay(gradeNum(e.exam2))}</td>
+      <td class="num grade-input" onclick="openEntryModal('${r.id}','${e.id}')">${gradeDisplay(gradeNum(e.exam3))}</td>
+      <td class="num grade-calc">${gradeDisplay(c.avg)}</td>
+      <td class="num grade-calc">${gradeDisplay(c.exam60)}</td>
+      <td class="num grade-total">${gradeDisplay(c.total)}</td>
+      <td>${escapeHtml(e.homeroomTeacher||'—')}</td>
+      <td>
+        <div class="cell-actions">
+          <button class="icon-btn" title="編輯成績" onclick="openEntryModal('${r.id}','${e.id}')">✎</button>
+          <button class="icon-btn del" title="刪除" onclick="deleteEntry('${r.id}','${e.id}')">✕</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  return `<div class="panel grade-card">
+    <div class="panel-head">
+      <div>
+        <h4 style="font-size:15px; font-family:'Noto Serif TC',serif; color:var(--primary-dark);">
+          ${escapeHtml(r.subject)}　<span class="hint" style="font-size:12px; font-weight:400;">學期別：${escapeHtml(r.semester)}　任教老師：${escapeHtml(r.teacher)}　${r.year}學年度</span>
+        </h4>
+      </div>
+      <div class="cell-actions">
+        <button class="btn btn-sm" onclick="importRosterToSheet('${r.id}')">從名冊匯入學生</button>
+        <button class="btn btn-sm" onclick="openEntryModal('${r.id}')">＋ 新增學生</button>
+        <button class="btn btn-sm" onclick="exportGradePDF('${r.id}')">⤓ 匯出 PDF</button>
+        <button class="btn btn-sm" onclick="openGradeSheetModal('${r.id}')">編輯標題</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteGradeSheet('${r.id}')">刪除整份</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="grade-table">
+        <thead>
+          <tr>
+            <th rowspan="2">班級</th>
+            <th rowspan="2">座號</th>
+            <th rowspan="2">學號</th>
+            <th rowspan="2">姓名</th>
+            <th rowspan="2">身分別</th>
+            <th colspan="2" style="text-align:center; border-bottom:1px solid var(--line);">日常考查</th>
+            <th colspan="5" style="text-align:center; border-bottom:1px solid var(--line);">定期評量</th>
+            <th rowspan="2" style="background:var(--primary-soft); color:var(--primary-dark);">學期成績</th>
+            <th rowspan="2">原班教師</th>
+            <th rowspan="2">操作</th>
+          </tr>
+          <tr>
+            <th>平時</th><th>40%</th>
+            <th>第一次</th><th>第二次</th><th>第三次</th>
+            <th>平均</th><th>60%</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows||`<tr><td colspan="15"><div class="hint" style="padding:14px 0; text-align:center;">尚無學生資料，請點選「從名冊匯入學生」或「新增學生」</div></td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function openGradeSheetModal(id){
+  const editing = id ? DATA.gradeRecords.find(r=>r.id===id) : null;
+  const r = editing || {id:uid('gr'), year:String(new Date().getFullYear()-1911), semester:'一下', subject:'', teacher:''};
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal">
+        <div class="modal-head">
+          <h3>${editing?'編輯成績表標題':'新增成績表'}</h3>
+          <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <form id="sheet-form">
+          <div class="field-row">
+            <div class="field"><label>學年度（民國年）</label><input name="year" value="${escapeHtml(r.year)}" required></div>
+            <div class="field"><label>學期別（如：一下、二上）</label><input name="semester" value="${escapeHtml(r.semester)}" placeholder="例：一下"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>科目名稱</label><input name="subject" value="${escapeHtml(r.subject)}" placeholder="例：英語文、英文精讀" required></div>
+            <div class="field"><label>任教老師</label><input name="teacher" value="${escapeHtml(r.teacher)}" placeholder="例：王老師"></div>
+          </div>
+        </form>
+        <div class="modal-foot">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn btn-primary" onclick="saveGradeSheet('${r.id}',${editing?'true':'false'})">儲存</button>
+        </div>
+      </div>
+    </div>`;
+}
+function saveGradeSheet(id, isEditing){
+  const fd = new FormData(document.getElementById('sheet-form'));
+  if(!fd.get('subject')){ showToast('請輸入科目名稱'); return; }
+  const obj = {};
+  for(const [k,v] of fd.entries()) obj[k]=v;
+  if(isEditing){
+    const idx = DATA.gradeRecords.findIndex(r=>r.id===id);
+    DATA.gradeRecords[idx] = {...DATA.gradeRecords[idx], ...obj};
+  } else {
+    DATA.gradeRecords.push({id, ...obj, entries:[]});
+    UI.gradeYear = obj.year;
+  }
+  scheduleSave(); closeModal(); renderGrades();
+  showToast(isEditing?'已更新成績表':'已新增成績表');
+}
+function deleteGradeSheet(id){
+  const r = DATA.gradeRecords.find(x=>x.id===id);
+  if(!confirm(`確定要刪除整份「${r.subject}」成績表嗎？`)) return;
+  DATA.gradeRecords = DATA.gradeRecords.filter(x=>x.id!==id);
+  scheduleSave(); renderGrades(); showToast('已刪除成績表');
+}
+
+function openEntryModal(sheetId, entryId){
+  const sheet = DATA.gradeRecords.find(r=>r.id===sheetId);
+  const editing = entryId ? sheet.entries.find(e=>e.id===entryId) : null;
+  const e = editing || {id:uid('ge'), class:'', seat:'', studentId:'', name:'', identityType:'', homeroomTeacher:'', daily:'', exam1:'', exam2:'', exam3:''};
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal wide">
+        <div class="modal-head">
+          <h3>${editing?'編輯成績 — '+escapeHtml(e.name):'新增學生成績'}</h3>
+          <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <form id="entry-form">
+          <div class="eyebrow">學生基本資料</div>
+          <div class="field-row3">
+            <div class="field"><label>班級</label><input name="class" value="${escapeHtml(e.class)}" required></div>
+            <div class="field"><label>座號</label><input name="seat" type="number" value="${escapeHtml(e.seat)}"></div>
+            <div class="field"><label>學號</label><input name="studentId" value="${escapeHtml(e.studentId)}"></div>
+          </div>
+          <div class="field-row3">
+            <div class="field"><label>姓名</label><input name="name" value="${escapeHtml(e.name)}" required></div>
+            <div class="field"><label>身分別</label>
+              <input name="identityType" list="id-type-opts" value="${escapeHtml(e.identityType)}" placeholder="例：原住民、一般生">
+              <datalist id="id-type-opts"><option value="一般生"><option value="原住民"><option value="新住民"><option value="低收入戶"></datalist>
+            </div>
+            <div class="field"><label>原班教師（導師）</label><input name="homeroomTeacher" value="${escapeHtml(e.homeroomTeacher)}"></div>
+          </div>
+          <div class="eyebrow" style="margin-top:6px;">日常考查</div>
+          <div class="field-row">
+            <div class="field"><label>平時成績（0–100）</label><input name="daily" type="number" min="0" max="100" value="${escapeHtml(e.daily)}" placeholder="留空則不計"></div>
+            <div class="field" style="justify-content:flex-end; align-self:flex-end; padding-bottom:14px;">
+              <span class="hint">40% = 平時 × 0.4（自動計算）</span>
+            </div>
+          </div>
+          <div class="eyebrow" style="margin-top:6px;">定期評量</div>
+          <div class="field-row3">
+            <div class="field"><label>第一次</label><input name="exam1" type="number" min="0" max="100" value="${escapeHtml(e.exam1)}" placeholder="留空則不計"></div>
+            <div class="field"><label>第二次</label><input name="exam2" type="number" min="0" max="100" value="${escapeHtml(e.exam2)}" placeholder="留空則不計"></div>
+            <div class="field"><label>第三次</label><input name="exam3" type="number" min="0" max="100" value="${escapeHtml(e.exam3)}" placeholder="留空則不計"></div>
+          </div>
+          <div class="hint" style="margin-top:-6px;">平均 = 三次合計 ÷ 3（未考次以 0 計），60% = 平均 × 0.6，學期成績 = 40% + 60%</div>
+        </form>
+        <div class="modal-foot">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn btn-primary" onclick="saveEntry('${sheetId}','${e.id}',${editing?'true':'false'})">儲存</button>
+        </div>
+      </div>
+    </div>`;
+}
+function saveEntry(sheetId, entryId, isEditing){
+  const fd = new FormData(document.getElementById('entry-form'));
+  if(!fd.get('name')||!fd.get('class')){ showToast('請填寫班級與姓名'); return; }
+  const obj = {id:entryId};
+  for(const [k,v] of fd.entries()){
+    if(['daily','exam1','exam2','exam3','seat'].includes(k)){
+      obj[k] = v==='' ? null : Number(v);
+    } else {
+      obj[k] = v;
+    }
+  }
+  const sheet = DATA.gradeRecords.find(r=>r.id===sheetId);
+  if(isEditing){
+    const idx = sheet.entries.findIndex(e=>e.id===entryId);
+    sheet.entries[idx] = {...sheet.entries[idx], ...obj};
+  } else {
+    sheet.entries.push(obj);
+  }
+  scheduleSave(); closeModal(); renderGrades();
+  showToast(isEditing?'已更新成績':'已新增學生成績');
+}
+function deleteEntry(sheetId, entryId){
+  const sheet = DATA.gradeRecords.find(r=>r.id===sheetId);
+  if(!confirm('確定要刪除此學生的成績記錄嗎？')) return;
+  sheet.entries = sheet.entries.filter(e=>e.id!==entryId);
+  scheduleSave(); renderGrades(); showToast('已刪除');
+}
+
+/* Import active students from roster to a grade sheet */
+function importRosterToSheet(sheetId){
+  const sheet = DATA.gradeRecords.find(r=>r.id===sheetId);
+  const active = DATA.students.filter(s=>!isArchived(s));
+  if(!active.length){ showToast('名冊中尚無在學學生'); return; }
+  let added = 0;
+  active.forEach(s=>{
+    const already = sheet.entries.some(e=>e.studentId===s.studentId||e.name===s.name);
+    if(!already){
+      sheet.entries.push({
+        id: uid('ge'),
+        class: s.class||'', seat: s.seat||null,
+        studentId: s.studentId||'', name: s.name||'',
+        identityType: s.identityType||'',
+        homeroomTeacher: s.homeroomTeacher||'',
+        daily:null, exam1:null, exam2:null, exam3:null,
+      });
+      added++;
+    }
+  });
+  // Sort by class then seat
+  sheet.entries.sort((a,b)=> a.class.localeCompare(b.class)||((a.seat||0)-(b.seat||0)));
+  scheduleSave(); renderGrades();
+  showToast(added>0 ? `已從名冊匯入 ${added} 位學生` : '所有名冊學生均已存在於此成績表');
+}
+
+/* PDF export matching the 特推會審查 style */
+function exportGradePDF(sheetId){
+  const r = DATA.gradeRecords.find(x=>x.id===sheetId);
+  if(!r) return;
+  const school = (DATA.settings&&DATA.settings.schoolName)||'';
+  const rows = (r.entries||[]).map(e=>{ e = syncedEntry(e);
+    const c = gradeCalc(e);
+    const td = v => `<td>${v===null||v===undefined?'':String(v)}</td>`;
+    return `<tr>
+      ${td(e.class)}${td(e.seat)}${td(e.studentId)}${td(e.name)}${td(e.identityType)}
+      ${td(e.daily!==null?e.daily:'')}${td(c.daily40!==null?c.daily40:'')}
+      ${td(e.exam1!==null?e.exam1:'')}${td(e.exam2!==null?e.exam2:'')}${td(e.exam3!==null?e.exam3:'')}
+      ${td(c.avg!==null?c.avg:'')}${td(c.exam60!==null?c.exam60:'')}
+      <td style="font-weight:700; background:#f0f5f0;">${c.total!==null?c.total:''}</td>
+      ${td(e.homeroomTeacher)}
+    </tr>`;
+  }).join('');
+
+  const body = `
+    <div style="display:flex; justify-content:space-between; margin-bottom:10px; align-items:baseline; flex-wrap:wrap; gap:8px;">
+      <span><b>科目：</b>${escapeHtml(r.subject)}</span>
+      <span><b>學期別：</b>${escapeHtml(r.semester)}</span>
+      <span><b>任教老師：</b>${escapeHtml(r.teacher)}</span>
+      ${school?`<span><b>學校：</b>${escapeHtml(school)}</span>`:''}
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th rowspan="2">班級</th><th rowspan="2">座號</th><th rowspan="2">學號</th>
+          <th rowspan="2">姓名</th><th rowspan="2">身分別</th>
+          <th colspan="2" style="text-align:center;">日常考查</th>
+          <th colspan="5" style="text-align:center;">定期評量</th>
+          <th rowspan="2">學期成績</th><th rowspan="2">原班教師</th>
+        </tr>
+        <tr>
+          <th>平時</th><th>40%</th>
+          <th>第一次</th><th>第二次</th><th>第三次</th><th>平均</th><th>60%</th>
+        </tr>
+      </thead>
+      <tbody>${rows||'<tr><td colspan="14">無資料</td></tr>'}</tbody>
+    </table>
+    <div style="margin-top:10px; font-size:10.5px; color:#94A092;">列印日期：${todayStr()}　SEAM v1.0</div>
+  `;
+  openPrintWindow(`${r.subject} 成績表`, body);
+}
+
+</script>
+<script>
+/* ---------------- Settings tab ---------------- */
+function ensureSettings(){
+  if(!DATA.settings) DATA.settings = {};
+  const def = {
+    schoolName: '',
+    schoolShort: '',
+    resourceClassName: '特殊教育資源班',
+    city: '',
+    contact: '',
+    principalName: '',
+    resourceDirectorName: '',
+    counselingDirectorName: '',
+    depts: ['資料處理科','電子商務科','會計事務科','商業經營科','應用英語科','觀光事務科','廣告設計科'],
+  };
+  for(const [k,v] of Object.entries(def)){
+    if(DATA.settings[k]===undefined) DATA.settings[k]=v;
+  }
+  return DATA.settings;
+}
+
+function renderSettings(){
+  const cfg = ensureSettings();
+  const deptsStr = (cfg.depts||[]).join('、');
+
+  document.getElementById('content').innerHTML = `
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">系統設定 Settings</div>
+        <h1>基本資料設定</h1>
+        <div class="sub">設定學校與資源班基本資訊，將會顯示於各頁標題、匯出報表等處</div>
+      </div>
+    </div>
+
+    <div class="panel" style="max-width:680px;">
+      <div class="panel-head"><h3>學校基本資訊</h3></div>
+      <form id="settings-form">
+        <div class="field-row">
+          <div class="field">
+            <label>學校全名</label>
+            <input name="schoolName" value="${escapeHtml(cfg.schoolName)}" placeholder="例：國立臺灣高級商業職業學校">
+          </div>
+          <div class="field">
+            <label>學校簡稱</label>
+            <input name="schoolShort" value="${escapeHtml(cfg.schoolShort)}" placeholder="例：臺灣高商">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>特殊教育班班型</label>
+            <input name="resourceClassName" value="${escapeHtml(cfg.resourceClassName)}" placeholder="例：分散式資源班、集中式特教班">
+          </div>
+          <div class="field">
+            <label>縣市</label>
+            <input name="city" value="${escapeHtml(cfg.city)}" placeholder="例：臺北市">
+          </div>
+        </div>
+        <div class="field">
+          <label>聯絡資訊（電話、Email 等，選填）</label>
+          <input name="contact" value="${escapeHtml(cfg.contact)}" placeholder="例：089-123456 分機 xxx">
+        </div>
+      </form>
+    </div>
+
+    <div class="panel" style="max-width:680px;">
+      <div class="panel-head"><h3>科系設定</h3></div>
+      <div class="hint" style="margin-bottom:10px;">科別縮寫取班級名稱首字（如「資一甲」取「資」），此處列出完整名稱對照，用於篩選按鈕顯示。</div>
+      <div id="dept-list">
+        ${renderDeptList(cfg.depts)}
+      </div>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <input id="dept-input" placeholder="新增科系，例：餐飲管理科" style="flex:1; min-width:180px;">
+        <button class="btn" onclick="addDept()">＋ 新增</button>
+      </div>
+    </div>
+
+    <div style="max-width:680px; display:flex; justify-content:flex-end; margin-top:8px;">
+      <button class="btn btn-primary" onclick="saveSettings()">儲存所有設定</button>
+    </div>
+  `;
+}
+
+function renderDeptList(depts){
+  return (depts||[]).map((d,i)=>`
+    <div class="dept-item" id="dept-item-${i}" style="display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px dashed var(--line-soft);">
+      <span style="width:22px; text-align:center; font-size:11px; color:var(--ink-faint);">${escapeHtml(deptsShort(d))}</span>
+      <input value="${escapeHtml(d)}" style="flex:1;" onchange="updateDeptItem(${i}, this.value)">
+      <button class="icon-btn del" title="刪除" onclick="removeDept(${i})">✕</button>
+    </div>
+  `).join('');
+}
+function deptsShort(deptName){
+  return (deptName||'').trim().charAt(0);
+}
+function addDept(){
+  const input = document.getElementById('dept-input');
+  const val = input.value.trim();
+  if(!val){ showToast('請輸入科系名稱'); return; }
+  const cfg = ensureSettings();
+  cfg.depts = [...(cfg.depts||[]), val];
+  input.value = '';
+  document.getElementById('dept-list').innerHTML = renderDeptList(cfg.depts);
+  showToast('已新增科系');
+}
+function removeDept(idx){
+  const cfg = ensureSettings();
+  cfg.depts.splice(idx, 1);
+  document.getElementById('dept-list').innerHTML = renderDeptList(cfg.depts);
+  showToast('已移除');
+}
+function updateDeptItem(idx, val){
+  const cfg = ensureSettings();
+  cfg.depts[idx] = val.trim();
+}
+function saveSettings(){
+  const cfg = ensureSettings();
+  // gather school form
+  const f1 = document.getElementById('settings-form');
+  if(f1){
+    const fd = new FormData(f1);
+    for(const [k,v] of fd.entries()) cfg[k] = v;
+  }
+  // dept items may have been edited inline; re-read from DOM inputs
+  const deptInputs = document.querySelectorAll('#dept-list input');
+  if(deptInputs.length) cfg.depts = Array.from(deptInputs).map(el=>el.value.trim()).filter(Boolean);
+  scheduleSave();
+  // update sidebar brand
+  // Sidebar brand: t1 is always "特教行政管理系統" (fixed); only subtitle updates
+  const brandT2 = document.querySelector('.brand-text .t2');
+  const displayName = cfg.schoolShort || cfg.schoolName || '';
+  const newSchoolFull = displayName
+    ? (cfg.resourceClassName ? `${displayName}・${cfg.resourceClassName}` : displayName)
+    : (cfg.resourceClassName || '特殊教育行政管理系統');
+  if(brandT2) brandT2.textContent = newSchoolFull;
+  showToast('✓ 設定已儲存');
+}
+
+</script>
+<script>
+/* ---------------- App shell ---------------- */
+const TABS = [
+  {id:'dashboard', label:'總覽', icon:'◎'},
+  {id:'students', label:'學生資料', icon:'⚭'},
+  {id:'schedule', label:'分組與課表', icon:'▦'},
+  {id:'grades', label:'成績管理', icon:'✎'},
+  {id:'budget', label:'經費管理', icon:'¥'},
+  {id:'committee', label:'特推會審查', icon:'☑'},
+  {id:'settings', label:'系統設定', icon:'⚙'},
+];
+
+function renderShell(){
+  const cfg = (DATA && DATA.settings) ? DATA.settings : {};
+  const displayName = cfg.schoolShort || cfg.schoolName || '';
+  const classType = cfg.resourceClassName || '';
+  const schoolFull = displayName
+    ? (classType ? `${displayName}・${classType}` : displayName)
+    : (classType || '特殊教育行政管理系統');
+  document.getElementById('app').innerHTML = `
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div class="brand-text">
+          <div class="t1">特教行政管理系統</div>
+          <div class="t2">${escapeHtml(schoolFull)}</div>
+        </div>
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="nav-foot">
+        <button onclick="exportAllData()">⤓ 匯出完整備份</button>
+        <button onclick="document.getElementById('import-file').click()">⤒ 匯入備份檔</button>
+        <button onclick="resetToSeed()">↺ 清除所有資料</button>
+        <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importAllData(event)">
+      </div>
+    </aside>
+    <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+      <main class="main" id="content"></main>
+      <footer class="app-footer">
+        <div>特殊教育行政管理系統 v1.0</div>
+        <div style="font-size:10.5px; opacity:.7; letter-spacing:.02em;">Special Education Administration &amp; Management (SEAM)</div>
+        <div>Built with <a href="https://claude.ai" target="_blank">Claude</a> &nbsp;·&nbsp; Designed by <a href="https://mastodon.social/@izensun" target="_blank" rel="noopener">@izensun</a></div>
+        <div>
+          <a class="cc-badge" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" title="Creative Commons Attribution 4.0 International">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="color:#3F6B53;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="color:#3F6B53;"><path fill="currentColor" d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-6h2v6zm0-8h-2V7h2v1.5z"/></svg>
+            CC BY 4.0
+          </a>
+        </div>
+      </footer>
+    </div>
+  `;
+  renderNav();
+}
+function renderNav(){
+  document.getElementById('nav').innerHTML = TABS.map(t=>`
+    <button class="nav-item ${UI.tab===t.id?'active':''}" onclick="setTab('${t.id}')">
+      <span class="nav-icon">${t.icon}</span>${t.label}
+    </button>
+  `).join('');
+}
+function setTab(tab){
+  UI.tab = tab;
+  renderNav();
+  renderCurrentTab();
+}
+function renderCurrentTab(){
+  if(UI.tab==='dashboard') renderDashboard();
+  else if(UI.tab==='students') renderStudents();
+  else if(UI.tab==='schedule') renderSchedule();
+  else if(UI.tab==='budget') renderBudget();
+  else if(UI.tab==='committee') renderCommittee();
+  else if(UI.tab==='grades') renderGrades();
+  else if(UI.tab==='settings') renderSettings();
+}
+function closeModal(){ document.getElementById('modal-root').innerHTML=''; }
+
+/* ---------------- data management ---------------- */
+function exportAllData(){
+  const blob = new Blob([JSON.stringify(DATA, null, 1)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `資源班管理系統備份_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('已匯出完整備份檔');
+}
+function importAllData(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try{
+      const parsed = JSON.parse(reader.result);
+      // Budget-only import (contains __importType: "budgetOnly")
+      if(parsed.__importType === 'budgetOnly' && parsed.budgetTables){
+        if(!confirm(`匯入 ${parsed.budgetTables.length} 份經費計畫，現有經費資料將被取代，其他資料（學生、課表等）保持不變。確定繼續嗎？`)) return;
+        DATA.budgetTables = parsed.budgetTables;
+        UI.budgetYear = 'all';
+        UI.budgetShowCompleted = true;
+        await saveData();
+        setTab('budget');
+        showToast(`已成功匯入 ${parsed.budgetTables.length} 份經費計畫`);
+        return;
+      }
+      // Full backup import
+      if(!parsed.students || !parsed.budgetTables || !parsed.schedules) throw new Error('格式不符');
+      if(!confirm('匯入備份檔將會覆蓋目前所有資料，確定要繼續嗎？')) return;
+      DATA = parsed;
+      if(!DATA.meta) DATA.meta = {};
+      if(!DATA.reminders) DATA.reminders = [];
+      if(!DATA.settings) DATA.settings = {};
+      if(!DATA.gradeRecords) DATA.gradeRecords = [];
+      await saveData();
+      renderShell();
+      renderCurrentTab();
+      showToast('已成功匯入備份資料');
+    }catch(e){
+      showToast('⚠ 匯入失敗：' + (e.message || '檔案格式不正確'));
+    }
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+}
+async function resetToSeed(){
+  if(!confirm('確定要清除所有資料嗎？此動作無法復原，建議先匯出備份。')) return;
+  DATA = structuredClone(SEED_DATA);
+  await saveData();
+  renderShell();
+  renderCurrentTab();
+  showToast('已清除所有資料');
+}
+
+/* ---------------- init ---------------- */
+async function initApp(){
+  // Render shell with placeholder; DATA not yet available
+  DATA = {settings:{}};
+  renderShell();
+  document.getElementById('content').innerHTML = `<div class="empty-state" style="padding-top:120px;"><div class="big">⏳</div>資料載入中…</div>`;
+  const found = await loadData();
+  if(!found){
+    DATA = structuredClone(SEED_DATA);
+    await saveData();
+  }
+  if(!DATA.meta) DATA.meta = {};
+  if(!DATA.reminders) DATA.reminders = [];
+  if(!DATA.settings) DATA.settings = {};
+  if(!DATA.gradeRecords) DATA.gradeRecords = [];
+  // Backfill default period times for existing schedules created before this feature
+  const PERIOD_TIMES = ['08:10~09:00','09:10~10:00','10:10~11:00','11:10~12:00','13:15~14:05','14:15~15:05','15:25~16:15'];
+  (DATA.schedules||[]).forEach(sch=>{
+    (sch.periods||[]).forEach((p,i)=>{
+      if(!p.time && PERIOD_TIMES[i]) p.time = PERIOD_TIMES[i];
+    });
+  });
+  // Re-render shell now that DATA (including settings) is loaded
+  renderShell();
+  // First-time setup: if school name is empty, land on settings tab
+  if(!DATA.settings.schoolName){
+    UI.tab = 'settings';
+    showToast('👋 歡迎！請先至「系統設定」填寫學校基本資料');
+  }
+  renderCurrentTab();
+}
+window.addEventListener('DOMContentLoaded', initApp);
+
+</script>
+</body></html>
