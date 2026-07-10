@@ -2,11 +2,6 @@
 
 **Special Education Administration & Management (SEAM) · v1.2**
 
-[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgreen.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-[![Built with Claude](https://img.shields.io/badge/Built%20with-Claude-orange.svg)](https://claude.ai)
-![Platform](https://img.shields.io/badge/Platform-Browser%20%28Offline%29-blue)
-[![Ko-fi](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=ko-fi)](https://ko-fi.com/izensun)
-
 SEAM 是一套專為**高中職特殊教育教師**設計的免安裝行政管理工具，以單一 HTML 檔案發布，開啟即用，資料存於本機瀏覽器，無需帳號、伺服器或網路連線。
 
 ---
