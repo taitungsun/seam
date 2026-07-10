@@ -91,7 +91,7 @@ SEAM 將所有資料存於瀏覽器的 `localStorage`，**清除瀏覽器資料�
 
 ## 授權
 
-本系統採 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 授權。您可自由使用、修改與散布，惟需保留原始作者署名，且不得用於商業目的，衍生作品須以相同授權條款發布。
+本系統採 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 授權。您可自由使用、修改與散布，惟需保留原始作者署名，且不得用於商業目的，衍生作品須以相同授權條款發布。詳見 [LICENSE](LICENSE)。
 
 ---
 
