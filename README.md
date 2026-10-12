@@ -2,9 +2,10 @@
 
 **Special Education Administration & Management · v1.5**
 
-[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant)
-[![Built with Claude](https://img.shields.io/badge/Built%20with-Claude-orange.svg)](https://claude.ai)
-![Platform](https://img.shields.io/badge/Platform-Browser%20%28Offline%29-blue)
+[![Version](https://img.shields.io/badge/version-1.5-blue)](../../releases/latest)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant)
+[![Platform](https://img.shields.io/badge/Platform-Browser%20(Offline)-blue)](#技術說明)
+[![Ko-fi](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=ko-fi)](https://ko-fi.com/izensun)
 
 SEAM 是一套為**高中職特殊教育教師與特教業務承辦人**設計的離線行政工具。整套系統就是一個 HTML 檔案，用瀏覽器開啟即可使用，不需要安裝、帳號、伺服器或網路連線，所有資料只存在自己的電腦裡。
 
@@ -57,6 +58,13 @@ SEAM 是一套為**高中職特殊教育教師與特教業務承辦人**設計�
 - **儲存**：瀏覽器 `localStorage`（約 5 MB；系統設定頁可查看目前用量）
 - **字體**：Noto Serif TC／Noto Sans TC，透過 Google Fonts 載入；離線時自動改用系統字體
 - **隱私**：資料只存在使用者本機，不會傳送到任何伺服器
+
+---
+
+## 版本資訊
+
+- 目前版本：**V1.5**
+- 詳細版本更新內容請見 [Releases](../../releases)
 
 ---
 
