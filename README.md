@@ -28,7 +28,7 @@ SEAM 是一套為**高中職特殊教育教師與特教業務承辦人**設計�
 
 ## 快速開始
 
-1. 到 [Releases](../../releases) 下載最新版的 `SEAM_v1.5.html`（若要使用 IEP 匯出，請一併下載 `個別化教育計畫_模板.odt`）。
+1. 到 [Releases](../../releases) 下載最新版的 `SEAM_v1.5.html`（若要使用 IEP 匯出，請一併下載 `個別化教育計畫_模板.odt`，下載後的檔名是 `IEP_template.odt`）。
 2. 用瀏覽器開啟 `SEAM_v1.5.html`。建議使用 Chrome 或 Edge，PDF 匯出的相容性最好。
 3. 首次開啟時到「系統設定」填寫學校全名、簡稱、班型名稱與科系清單，儲存後即可開始使用。
 4. 若要匯出 IEP，請在「系統設定 → IEP 模板管理」上傳模板。
@@ -69,6 +69,14 @@ SEAM 是一套為**高中職特殊教育教師與特教業務承辦人**設計�
 - **相同方式分享**：改作後再散布，須採用相同授權條款。
 
 完整條款請見 [LICENSE](LICENSE)。
+
+---
+
+## 支持開發
+
+如果這個工具對您有幫助，歡迎透過 Ko-fi 請我喝杯咖啡 ☕
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/izensun)
 
 ---
 
