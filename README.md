@@ -1,8 +1,8 @@
 # 特殊教育行政管理系統 SEAM
 
-**Special Education Administration & Management · v1.5**
+**Special Education Administration & Management · v1.6**
 
-[![Version](https://img.shields.io/badge/version-1.5-blue)](../../releases/latest)
+[![Version](https://img.shields.io/badge/version-1.6-blue)](../../releases/latest)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant)
 [![Platform](https://img.shields.io/badge/Platform-Browser%20(Offline)-blue)](#技術說明)
 [![Ko-fi](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=ko-fi)](https://ko-fi.com/izensun)
@@ -29,8 +29,8 @@ SEAM 是一套為**高中職特殊教育教師與特教業務承辦人**設計�
 
 ## 快速開始
 
-1. 到 [Releases](../../releases) 下載最新版的 `SEAM_v1.5.html`（若要使用 IEP 匯出，請一併下載 `個別化教育計畫_模板.odt`，下載後的檔名是 `IEP_template.odt`）。
-2. 用瀏覽器開啟 `SEAM_v1.5.html`。建議使用 Chrome 或 Edge，PDF 匯出的相容性最好。
+1. 到 [Releases](../../releases) 下載最新版的 `SEAM_v1.6.html`（若要使用 IEP 匯出，請一併下載 `個別化教育計畫_模板.odt`，下載後的檔名是 `IEP_template.odt`）。
+2. 用瀏覽器開啟 `SEAM_v1.6.html`。建議使用 Chrome 或 Edge，PDF 匯出的相容性最好。
 3. 首次開啟時到「系統設定」填寫學校全名、簡稱、班型名稱與科系清單，儲存後即可開始使用。
 4. 若要匯出 IEP，請在「系統設定 → IEP 模板管理」上傳模板。
 
@@ -42,12 +42,12 @@ SEAM 是一套為**高中職特殊教育教師與特教業務承辦人**設計�
 
 | 操作 | 方式 |
 |------|------|
-| 備份 | 左側欄「⤓ 匯出系統備份」，儲存 `.json` 檔 |
-| 還原 | 左側欄「⤒ 匯入系統備份」，選取備份的 `.json` 檔 |
+| 備份 | 「系統設定」→「資料備份與還原」→「下載備份」，儲存 `.json` 檔 |
+| 還原 | 「系統設定」→「資料備份與還原」→「還原備份」，選取備份的 `.json` 檔 |
 | 僅匯入經費 | 匯入格式為 `{"__importType":"budgetOnly", ...}` 的 JSON，只更新經費資料，不影響學生與課表 |
-| 清除資料 | 左側欄「↺ 清除所有資料」，恢復初始狀態（無法復原，請先備份） |
+| 清除資料 | 「系統設定」→「資料備份與還原」→「清除資料」，恢復初始狀態（無法復原，請先備份） |
 
-**升級版本時**：在同一台電腦、同一個瀏覽器開啟新版，通常會沿用原本的資料；但部分瀏覽器會依檔案存放位置分開儲存。請在升級前先匯出備份，若新版中看不到資料，再用「匯入系統備份」還原即可。
+**升級版本時**：在同一台電腦、同一個瀏覽器開啟新版，通常會沿用原本的資料；但部分瀏覽器會依檔案存放位置分開儲存。請在升級前先匯出備份，若新版中看不到資料，再用「還原備份」還原即可。
 
 ---
 
@@ -63,7 +63,7 @@ SEAM 是一套為**高中職特殊教育教師與特教業務承辦人**設計�
 
 ## 版本資訊
 
-- 目前版本：**V1.5**
+- 目前版本：**v1.6**
 - 詳細版本更新內容請見 [Releases](../../releases)
 
 ---
