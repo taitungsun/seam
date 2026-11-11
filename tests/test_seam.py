@@ -2,6 +2,7 @@
 用法：python -I tests/test_seam.py [SEAM_vX.Y.html]   （預設取 repo 裡版本號最大的主程式）
 測試資料一律虛構。"""
 import json, pathlib, re, sys, tempfile
+sys.stdout.reconfigure(encoding="utf-8")  # Windows 主控台預設 cp950，印不出部分字元（python -I 不讀 PYTHONIOENCODING）
 from playwright.sync_api import sync_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
